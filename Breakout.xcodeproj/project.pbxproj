@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0910A2511B6D2FFB00730496 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0910A2501B6D2FFB00730496 /* AppDelegate.swift */; };
-		0910A2531B6D2FFB00730496 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0910A2521B6D2FFB00730496 /* FirstViewController.swift */; };
-		0910A2551B6D2FFB00730496 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0910A2541B6D2FFB00730496 /* SecondViewController.swift */; };
+		0910A2531B6D2FFB00730496 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0910A2521B6D2FFB00730496 /* GameViewController.swift */; };
+		0910A2551B6D2FFB00730496 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0910A2541B6D2FFB00730496 /* SettingsViewController.swift */; };
 		0910A2581B6D2FFC00730496 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0910A2561B6D2FFC00730496 /* Main.storyboard */; };
 		0910A25A1B6D2FFC00730496 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0910A2591B6D2FFC00730496 /* Images.xcassets */; };
 		0910A25D1B6D2FFC00730496 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0910A25B1B6D2FFC00730496 /* LaunchScreen.xib */; };
@@ -30,8 +30,8 @@
 		0910A24B1B6D2FFB00730496 /* Breakout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0910A24F1B6D2FFB00730496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0910A2501B6D2FFB00730496 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0910A2521B6D2FFB00730496 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
-		0910A2541B6D2FFB00730496 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		0910A2521B6D2FFB00730496 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		0910A2541B6D2FFB00730496 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		0910A2571B6D2FFC00730496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0910A2591B6D2FFC00730496 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0910A25C1B6D2FFC00730496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -80,8 +80,8 @@
 			isa = PBXGroup;
 			children = (
 				0910A2501B6D2FFB00730496 /* AppDelegate.swift */,
-				0910A2521B6D2FFB00730496 /* FirstViewController.swift */,
-				0910A2541B6D2FFB00730496 /* SecondViewController.swift */,
+				0910A2521B6D2FFB00730496 /* GameViewController.swift */,
+				0910A2541B6D2FFB00730496 /* SettingsViewController.swift */,
 				0910A2561B6D2FFC00730496 /* Main.storyboard */,
 				0910A2591B6D2FFC00730496 /* Images.xcassets */,
 				0910A25B1B6D2FFC00730496 /* LaunchScreen.xib */,
@@ -215,9 +215,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0910A2551B6D2FFB00730496 /* SecondViewController.swift in Sources */,
+				0910A2551B6D2FFB00730496 /* SettingsViewController.swift in Sources */,
 				0910A2511B6D2FFB00730496 /* AppDelegate.swift in Sources */,
-				0910A2531B6D2FFB00730496 /* FirstViewController.swift in Sources */,
+				0910A2531B6D2FFB00730496 /* GameViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
