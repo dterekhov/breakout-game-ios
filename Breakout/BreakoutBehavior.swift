@@ -41,13 +41,21 @@ class BreakoutBehavior: UIDynamicBehavior {
     // MARK: - Complex behaviors
     // MARK: Ball
     func addBallBehavior(ball: UIView) {
+        removeBallBehavior(ball)
+        
         dynamicAnimator?.referenceView?.addSubview(ball)
         collider.addItem(ball)
         baseBehavior.addItem(ball)
     }
     
-    // TODO: - Убрать нарастание скорости
+    private func removeBallBehavior(ball: UIView) {
+        collider.removeItem(ball)
+        baseBehavior.removeItem(ball)
+        ball.removeFromSuperview()
+    }
+    
     func pushBall(ball: UIView) {
+        // TODO: - Remove speed increase
         let push = UIPushBehavior(items: [ball], mode: UIPushBehaviorMode.Instantaneous)
         push.magnitude = Constants.BallSpeed
         
@@ -59,6 +67,12 @@ class BreakoutBehavior: UIDynamicBehavior {
         }
         addChildBehavior(push)
     }
+    
+//    // MARK: Paddle
+//    func addPaddleBehavior(paddle: UIView) {
+//        dynamicAnimator?.referenceView?.addSubview(paddle)
+//        collider.addItem(paddle)
+//    }
     
     // MARK:
     func addBarrier(path: UIBezierPath, named name: String) {

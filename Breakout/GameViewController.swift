@@ -10,13 +10,27 @@ import UIKit
 
 class GameViewController: UIViewController {
     private struct Constants {
+        static let PaddleHeight: CGFloat = 10
+        static let PaddleBottomIndent: CGFloat = 10
+        static let PaddleCornerRadius: CGFloat = 5
+        static let PaddleBoundaryIdentifier = "Paddle"
     }
     
     // MARK: - Members
     @IBOutlet private weak var gameView: BezierPathsView!
     private let breakoutBehavior = BreakoutBehavior()
-    var ballInGame = false
-    var ball: UIView?
+    private lazy var ball: UIView = {
+        let ball = UIView()
+        ball.backgroundColor = UIColor.lightGrayColor()
+        return ball
+    }()
+    private lazy var paddle: UIView = {
+        let paddle = UIView()
+        paddle.layer.cornerRadius = Constants.PaddleCornerRadius
+        paddle.backgroundColor = UIColor.darkGrayColor()
+        self.gameView.addSubview(paddle)
+        return paddle
+    }()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -25,11 +39,8 @@ class GameViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
-        if !ballInGame {
-            ballInGame = true
-            
-            addBall()
-        }
+        resetBall()
+        resetPaddle()
     }
     
     // MARK: - Animation
@@ -40,29 +51,33 @@ class GameViewController: UIViewController {
     
     // MARK: - Gestures
     @IBAction private func gameViewTap(sender: UITapGestureRecognizer) {
-        breakoutBehavior.pushBall(ball!)
+        breakoutBehavior.pushBall(ball)
     }
     
     @IBAction private func gameViewSwipe(sender: UIPanGestureRecognizer) {
-        
+        // TODO: Move paddle with horizontal swipe
     }
     
     // MARK: -
-    private func addBall() {
-        let ball = UIView(frame: CGRect(origin: CGPoint.zeroPoint, size: ballSize))
-        ball.center = CGPoint(x: view.bounds.midX, y: view.bounds.midY)
+    private func resetBall() {
+        ball.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - ballSize.width / 2, y: gameView.bounds.midY - ballSize.height / 2), size: ballSize)
         ball.layer.cornerRadius = ballSize.width / 2
-        ball.backgroundColor = UIColor.lightGrayColor()
-        self.ball = ball
-        
         breakoutBehavior.addBallBehavior(ball)
     }
     
+    private func resetPaddle() {
+        paddle.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - paddleSize.width / 2, y: gameView.bounds.height - paddleSize.height - Constants.PaddleBottomIndent), size: paddleSize)
+        breakoutBehavior.addBarrier(UIBezierPath(roundedRect: paddle.frame, cornerRadius: Constants.PaddleCornerRadius), named: Constants.PaddleBoundaryIdentifier)
+    }
     
-    
+    // MARK: - Helpers
     private var ballSize: CGSize {
         let sideSize = gameView.bounds.size.width / 10
         return CGSize(width: sideSize, height: sideSize)
     }
+    
+    private var paddleSize: CGSize {
+        let width = ballSize.width * 2
+        return CGSize(width: width, height: Constants.PaddleHeight)
+    }
 }
-
