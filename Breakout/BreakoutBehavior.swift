@@ -18,7 +18,6 @@ class BreakoutBehavior: UIDynamicBehavior {
     // MARK: - Members
     private lazy var collider: UICollisionBehavior = {
         let lazilyCreatedCollider = UICollisionBehavior()
-        lazilyCreatedCollider.translatesReferenceBoundsIntoBoundary = true
         return lazilyCreatedCollider
     }()
     
@@ -67,12 +66,6 @@ class BreakoutBehavior: UIDynamicBehavior {
         }
         addChildBehavior(push)
     }
-    
-//    // MARK: Paddle
-//    func addPaddleBehavior(paddle: UIView) {
-//        dynamicAnimator?.referenceView?.addSubview(paddle)
-//        collider.addItem(paddle)
-//    }
     
     // MARK:
     func addBarrier(path: UIBezierPath, named name: String) {

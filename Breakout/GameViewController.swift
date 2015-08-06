@@ -14,6 +14,7 @@ class GameViewController: UIViewController {
         static let PaddleBottomIndent: CGFloat = 10
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
+        static let GameViewBoundaryIdentifier = "GameView"
     }
     
     // MARK: - Members
@@ -39,6 +40,9 @@ class GameViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        addGameViewBarriers()
         resetBall()
         resetPaddle()
     }
@@ -50,12 +54,15 @@ class GameViewController: UIViewController {
     }()
     
     // MARK: - Gestures
-    @IBAction private func gameViewTap(sender: UITapGestureRecognizer) {
+    @IBAction private func gameViewTap(gesture: UITapGestureRecognizer) {
         breakoutBehavior.pushBall(ball)
     }
     
-    @IBAction private func gameViewSwipe(sender: UIPanGestureRecognizer) {
-        // TODO: Move paddle with horizontal swipe
+    @IBAction private func gameViewSwipe(gesture: UIPanGestureRecognizer) {
+        if gesture.state == .Changed {
+            placePaddle(deltaOriginX: gesture.translationInView(gameView).x)
+            gesture.setTranslation(CGPointZero, inView: gameView)
+        }
     }
     
     // MARK: -
@@ -67,7 +74,26 @@ class GameViewController: UIViewController {
     
     private func resetPaddle() {
         paddle.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - paddleSize.width / 2, y: gameView.bounds.height - paddleSize.height - Constants.PaddleBottomIndent), size: paddleSize)
+        refreshBarrierInPaddle()
+    }
+    
+    private func placePaddle(#deltaOriginX: CGFloat) {
+        let newPaddleOriginX = paddle.frame.origin.x + deltaOriginX
+        let maxPossiblePaddleOriginX = gameView.bounds.maxX - paddleSize.width
+        
+        // Handle to keep paddle between left and right bounds of gameView
+        paddle.frame.origin.x = max(min(newPaddleOriginX, maxPossiblePaddleOriginX), 0.0)
+        refreshBarrierInPaddle()
+    }
+    
+    private func refreshBarrierInPaddle() {
         breakoutBehavior.addBarrier(UIBezierPath(roundedRect: paddle.frame, cornerRadius: Constants.PaddleCornerRadius), named: Constants.PaddleBoundaryIdentifier)
+    }
+    
+    private func addGameViewBarriers() {
+        var rect = gameView.bounds;
+        rect.size.height *= 2
+        breakoutBehavior.addBarrier(UIBezierPath(rect: rect), named: Constants.GameViewBoundaryIdentifier)
     }
     
     // MARK: - Helpers
