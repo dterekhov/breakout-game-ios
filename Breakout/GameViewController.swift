@@ -8,13 +8,21 @@
 
 import UIKit
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, UICollisionBehaviorDelegate {
     private struct Constants {
         static let PaddleHeight: CGFloat = 10
         static let PaddleBottomIndent: CGFloat = 10
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
+        static let BrickRowsCount = 3
+        static let BrickColumnsCount = 5
+        static let BrickInteritemSpacing: CGFloat = 4
+        static let BrickHeight: CGFloat = 30
+    }
+    
+    private struct Brick {
+        var view: UIView
     }
     
     // MARK: - Members
@@ -22,10 +30,16 @@ class GameViewController: UIViewController {
     
     private lazy var breakoutBehavior: BreakoutBehavior = {
         let breakoutBehavior = BreakoutBehavior()
+        breakoutBehavior.collisionDelegate = self
         breakoutBehavior.ballOutOfGameViewBoundsHandler = {
             self.resetBall()
         }
         return breakoutBehavior
+    }()
+    
+    private lazy var animator: UIDynamicAnimator = {
+        let lazilyCreatedDynamicAnimator = UIDynamicAnimator(referenceView: self.gameView)
+        return lazilyCreatedDynamicAnimator
     }()
     
     private var ball: UIView?
@@ -38,10 +52,14 @@ class GameViewController: UIViewController {
         return paddle
     }()
     
+    private var bricks = [Int:Brick]()
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         animator.addBehavior(breakoutBehavior)
+        createBricks()
     }
     
     override func viewDidLayoutSubviews() {
@@ -50,13 +68,8 @@ class GameViewController: UIViewController {
         addGameViewBarriers()
         resetBall()
         resetPaddle()
+        placeBricks()
     }
-    
-    // MARK: - Animation
-    private lazy var animator: UIDynamicAnimator = {
-        let lazilyCreatedDynamicAnimator = UIDynamicAnimator(referenceView: self.gameView)
-        return lazilyCreatedDynamicAnimator
-    }()
     
     // MARK: - Gestures
     @IBAction private func gameViewTap(gesture: UITapGestureRecognizer) {
@@ -70,7 +83,7 @@ class GameViewController: UIViewController {
         }
     }
     
-    // MARK: -
+    // MARK: - Ball
     private func resetBall() {
         func placeBall(ball: UIView) {
             ball.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - ballSize.width / 2, y: paddle.frame.origin.y - ballSize.height), size: ballSize)
@@ -87,6 +100,7 @@ class GameViewController: UIViewController {
         }
     }
     
+    // MARK: - Paddle
     private func resetPaddle() {
         paddle.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - paddleSize.width / 2, y: gameView.bounds.height - paddleSize.height - Constants.PaddleBottomIndent), size: paddleSize)
         refreshBarrierInPaddle()
@@ -105,10 +119,58 @@ class GameViewController: UIViewController {
         breakoutBehavior.addBarrier(UIBezierPath(roundedRect: paddle.frame, cornerRadius: Constants.PaddleCornerRadius), named: Constants.PaddleBoundaryIdentifier)
     }
     
-    private func addGameViewBarriers() {
-        var rect = gameView.bounds;
-        rect.size.height *= 2
-        breakoutBehavior.addBarrier(UIBezierPath(rect: rect), named: Constants.GameViewBoundaryIdentifier)
+    // MARK: - Bricks
+    private func createBricks() {
+        for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
+            var brickView = UIView()
+            brickView.backgroundColor = UIColor.brownColor()
+            gameView.addSubview(brickView)
+            bricks[index] = Brick(view: brickView)
+        }
+    }
+    
+    private func placeBricks() {
+        let totalSpaceItemsWidth = CGFloat(Constants.BrickColumnsCount + 1) * Constants.BrickInteritemSpacing
+        let brickWidth = (gameView.bounds.width - totalSpaceItemsWidth) / CGFloat(Constants.BrickColumnsCount)
+        let brickSize = CGSize(width: brickWidth, height: Constants.BrickHeight)
+        
+        var origin = CGPoint(x: Constants.BrickInteritemSpacing, y: Constants.BrickInteritemSpacing)
+        for row in 1...Constants.BrickRowsCount {
+            for column in 1...Constants.BrickColumnsCount {
+                let index = row * Constants.BrickColumnsCount + column
+                if let brick = bricks[index] {
+                    brick.view.frame = CGRect(origin: origin, size: brickSize)
+                    addBrickBarrier(brick.view, index: index)
+                }
+                origin.x += brickWidth + Constants.BrickInteritemSpacing
+            }
+            origin = CGPoint(x: Constants.BrickInteritemSpacing, y: origin.y + Constants.BrickHeight + Constants.BrickInteritemSpacing)
+        }
+    }
+    
+    private func addBrickBarrier(brickView: UIView, index: Int) {
+        breakoutBehavior.addBarrier(UIBezierPath(rect: brickView.frame), named: index)
+    }
+    
+    private func destroyBrickAtIndex(index: Int) {
+        self.breakoutBehavior.removeBarrier(index)
+        
+        if let brickView = bricks[index]?.view {
+            UIView.transitionWithView(brickView, duration:1.0, options: UIViewAnimationOptions.TransitionFlipFromTop, animations: { () -> Void in
+                brickView.alpha = 0.5
+                }, completion: {
+                    (success) -> Void in
+                    brickView.removeFromSuperview()
+                    self.bricks[index] = nil
+            })
+        }
+    }
+    
+    // MARK: - UICollisionBehaviorDelegate
+    func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
+        if let brickIndex = identifier as? Int {
+            destroyBrickAtIndex(brickIndex)
+        }
     }
     
     // MARK: - Helpers
@@ -120,5 +182,11 @@ class GameViewController: UIViewController {
     private var paddleSize: CGSize {
         let width = ballSize.width * 2
         return CGSize(width: width, height: Constants.PaddleHeight)
+    }
+    
+    private func addGameViewBarriers() {
+        var rect = gameView.bounds;
+        rect.size.height *= 2
+        breakoutBehavior.addBarrier(UIBezierPath(rect: rect), named: Constants.GameViewBoundaryIdentifier)
     }
 }

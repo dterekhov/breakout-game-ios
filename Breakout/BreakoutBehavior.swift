@@ -44,6 +44,12 @@ class BreakoutBehavior: UIDynamicBehavior {
     
     var ballOutOfGameViewBoundsHandler: (() -> ())?
     
+    // MARK: - Accessors
+    var collisionDelegate: UICollisionBehaviorDelegate? {
+        get { return collider.collisionDelegate }
+        set { collider.collisionDelegate = newValue }
+    }
+    
     // MARK: - Lifecycle
     override init() {
         super.init()
@@ -86,8 +92,12 @@ class BreakoutBehavior: UIDynamicBehavior {
     }
     
     // MARK:
-    func addBarrier(path: UIBezierPath, named name: String) {
+    func addBarrier(path: UIBezierPath, named name: NSCopying) {
         collider.removeBoundaryWithIdentifier(name)
         collider.addBoundaryWithIdentifier(name, forPath: path)
+    }
+    
+    func removeBarrier(name: NSCopying) {
+        collider.removeBoundaryWithIdentifier(name)
     }
 }
