@@ -19,12 +19,17 @@ class GameViewController: UIViewController {
     
     // MARK: - Members
     @IBOutlet private weak var gameView: BezierPathsView!
-    private let breakoutBehavior = BreakoutBehavior()
-    private lazy var ball: UIView = {
-        let ball = UIView()
-        ball.backgroundColor = UIColor.lightGrayColor()
-        return ball
+    
+    private lazy var breakoutBehavior: BreakoutBehavior = {
+        let breakoutBehavior = BreakoutBehavior()
+        breakoutBehavior.ballOutOfGameViewBoundsHandler = {
+            self.resetBall()
+        }
+        return breakoutBehavior
     }()
+    
+    private var ball: UIView?
+    
     private lazy var paddle: UIView = {
         let paddle = UIView()
         paddle.layer.cornerRadius = Constants.PaddleCornerRadius
@@ -55,7 +60,7 @@ class GameViewController: UIViewController {
     
     // MARK: - Gestures
     @IBAction private func gameViewTap(gesture: UITapGestureRecognizer) {
-        breakoutBehavior.pushBall(ball)
+        breakoutBehavior.pushBall()
     }
     
     @IBAction private func gameViewSwipe(gesture: UIPanGestureRecognizer) {
@@ -67,9 +72,19 @@ class GameViewController: UIViewController {
     
     // MARK: -
     private func resetBall() {
-        ball.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - ballSize.width / 2, y: gameView.bounds.midY - ballSize.height / 2), size: ballSize)
-        ball.layer.cornerRadius = ballSize.width / 2
-        breakoutBehavior.addBallBehavior(ball)
+        func placeBall(ball: UIView) {
+            ball.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - ballSize.width / 2, y: paddle.frame.origin.y - ballSize.height), size: ballSize)
+            ball.layer.cornerRadius = ballSize.width / 2
+        }
+        
+        if let ball = breakoutBehavior.ball {
+            placeBall(ball)
+        } else {
+            let ball = UIView()
+            placeBall(ball)
+            ball.backgroundColor = UIColor.lightGrayColor()
+            breakoutBehavior.addBallBehavior(ball)
+        }
     }
     
     private func resetPaddle() {

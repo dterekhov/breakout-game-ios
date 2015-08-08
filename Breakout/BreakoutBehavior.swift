@@ -18,6 +18,14 @@ class BreakoutBehavior: UIDynamicBehavior {
     // MARK: - Members
     private lazy var collider: UICollisionBehavior = {
         let lazilyCreatedCollider = UICollisionBehavior()
+        lazilyCreatedCollider.action = {
+            if self.ball != nil && !CGRectIntersectsRect(self.ball!.frame, self.dynamicAnimator!.referenceView!.bounds) {
+                self.removeBallBehavior(self.ball!)
+                if self.ballOutOfGameViewBoundsHandler != nil {
+                    self.ballOutOfGameViewBoundsHandler!()
+                }
+            }
+        }
         return lazilyCreatedCollider
     }()
     
@@ -29,6 +37,12 @@ class BreakoutBehavior: UIDynamicBehavior {
         lazilyCreatedBaseBehavior.resistance = 0
         return lazilyCreatedBaseBehavior
     }()
+    
+    var ball: UIView? {
+        return collider.items.filter{ $0 is UIView }.map{ $0 as! UIView }.first
+    }
+    
+    var ballOutOfGameViewBoundsHandler: (() -> ())?
     
     // MARK: - Lifecycle
     override init() {
@@ -53,9 +67,13 @@ class BreakoutBehavior: UIDynamicBehavior {
         ball.removeFromSuperview()
     }
     
-    func pushBall(ball: UIView) {
+    func pushBall() {
         // TODO: - Remove speed increase
-        let push = UIPushBehavior(items: [ball], mode: UIPushBehaviorMode.Instantaneous)
+        
+        if ball == nil {
+            return
+        }
+        let push = UIPushBehavior(items: [ball!], mode: UIPushBehaviorMode.Instantaneous)
         push.magnitude = Constants.BallSpeed
         
         push.angle = CGFloat(Double(arc4random()) * M_PI * 2 / Double(UINT32_MAX))
