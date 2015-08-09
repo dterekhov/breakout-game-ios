@@ -74,11 +74,11 @@ class BreakoutBehavior: UIDynamicBehavior {
     }
     
     func pushBall() {
-        // TODO: - Remove speed increase
-        
         if ball == nil {
             return
         }
+        stopBall()
+        
         let push = UIPushBehavior(items: [ball!], mode: UIPushBehaviorMode.Instantaneous)
         push.magnitude = Constants.BallSpeed
         
@@ -89,6 +89,13 @@ class BreakoutBehavior: UIDynamicBehavior {
             }
         }
         addChildBehavior(push)
+    }
+    
+    private func stopBall() {
+        if ball != nil {
+            let velocity = baseBehavior.linearVelocityForItem(ball!)
+            baseBehavior.addLinearVelocity(CGPoint(x: -velocity.x, y: -velocity.y), forItem: ball!)
+        }
     }
     
     // MARK:
