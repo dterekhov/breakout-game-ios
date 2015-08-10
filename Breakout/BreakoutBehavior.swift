@@ -91,7 +91,7 @@ class BreakoutBehavior: UIDynamicBehavior {
         addChildBehavior(push)
     }
     
-    private func stopBall() {
+    func stopBall() {
         if ball != nil {
             let velocity = baseBehavior.linearVelocityForItem(ball!)
             baseBehavior.addLinearVelocity(CGPoint(x: -velocity.x, y: -velocity.y), forItem: ball!)

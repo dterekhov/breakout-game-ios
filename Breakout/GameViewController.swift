@@ -8,15 +8,15 @@
 
 import UIKit
 
-class GameViewController: UIViewController, UICollisionBehaviorDelegate {
+class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlertViewDelegate {
     private struct Constants {
         static let PaddleHeight: CGFloat = 10
         static let PaddleBottomIndent: CGFloat = 10
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
-        static let BrickRowsCount = 3
-        static let BrickColumnsCount = 5
+        static let BrickRowsCount = 1//3
+        static let BrickColumnsCount = 1//5
         static let BrickInteritemSpacing: CGFloat = 4
         static let BrickHeight: CGFloat = 30
     }
@@ -65,10 +65,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        addGameViewBarriers()
-        resetBall()
-        resetPaddle()
-        placeBricks()
+        resetGameState()
     }
     
     // MARK: - Gestures
@@ -88,6 +85,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate {
         func placeBall(ball: UIView) {
             ball.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - ballSize.width / 2, y: paddle.frame.origin.y - ballSize.height), size: ballSize)
             ball.layer.cornerRadius = ballSize.width / 2
+            animator.updateItemUsingCurrentState(ball)
         }
         
         if let ball = breakoutBehavior.ball {
@@ -137,7 +135,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate {
         var origin = CGPoint(x: Constants.BrickInteritemSpacing, y: Constants.BrickInteritemSpacing)
         for row in 1...Constants.BrickRowsCount {
             for column in 1...Constants.BrickColumnsCount {
-                let index = row * Constants.BrickColumnsCount + column
+                let index = (row - 1) * Constants.BrickColumnsCount + column
                 if let brick = bricks[index] {
                     brick.view.frame = CGRect(origin: origin, size: brickSize)
                     addBrickBarrier(brick.view, index: index)
@@ -162,6 +160,10 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate {
                     (success) -> Void in
                     brickView.removeFromSuperview()
                     self.bricks[index] = nil
+                    
+                    if self.bricks.count == 0 {
+                        self.allBricksDestroyedHandler()
+                    }
             })
         }
     }
@@ -171,6 +173,26 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate {
         if let brickIndex = identifier as? Int {
             destroyBrickAtIndex(brickIndex)
         }
+    }
+    
+    // MARK: - Game
+    private func allBricksDestroyedHandler() {
+        breakoutBehavior.stopBall()
+        let alertView = UIAlertView(title: "Congratulations!", message: "You completed level. Play again?", delegate: self, cancelButtonTitle: "Ok")
+        alertView.show()
+    }
+    
+    private func resetGameState() {
+        addGameViewBarriers()
+        placeBricks()
+        resetPaddle()
+        resetBall()
+    }
+    
+    // MARK: - UIAlertViewDelegate
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        createBricks()
+        resetGameState()
     }
     
     // MARK: - Helpers
