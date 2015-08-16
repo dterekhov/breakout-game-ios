@@ -15,27 +15,47 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
-        static let BrickRowsCount = 3//3
-        static let BrickColumnsCount = 5//5
+        static let BrickRowsCount = 1
+        static let BrickColumnsCount = 5
         static let BrickInteritemSpacing: CGFloat = 4
         static let BrickHeight: CGFloat = 30
+        static let BallSpeed: CGFloat = 0.5
+        static let BrickNormalTypeColor = UIColor.brownColor()
+        static let BrickStrongTypeColor = UIColor.lightGrayColor()
         
         static let PlayImage = UIImage(named: "ico_play")
         static let PauseImage = UIImage(named: "ico_pause")
     }
     
-    private struct Brick {
-        var view: UIView
-    }
     
-    private struct GameState {
-        var paddleOriginY: CGFloat
-        var ballSpeed: CGFloat
-        var ballLinearVelocityX: CGFloat
-        var ballLinearVelocityY: CGFloat
-        var ballOriginX: CGFloat
-        var ballOriginY: CGFloat
-        var remainingBricks: [Int]
+    private class Brick {
+        private enum BrickType {
+            case Normal
+            case Strong
+        }
+        
+        var view: UIView
+        var type: BrickType {
+            didSet {
+                changeViewByType(type)
+            }
+        }
+        
+        init(parentView: UIView, type: BrickType) {
+            self.type = type
+            self.view = UIView()
+            changeViewByType(type)
+            parentView.addSubview(self.view)
+        }
+        
+        private func changeViewByType(type: BrickType) {
+            switch type {
+            case .Normal:
+                view.backgroundColor = Constants.BrickNormalTypeColor
+            case .Strong:
+                view.backgroundColor = Constants.BrickStrongTypeColor
+            }
+        }
     }
     
     // MARK: - Members
@@ -44,6 +64,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private lazy var breakoutBehavior: BreakoutBehavior = {
         let breakoutBehavior = BreakoutBehavior()
+        breakoutBehavior.ballSpeed = Constants.BallSpeed
         breakoutBehavior.collisionDelegate = self
         breakoutBehavior.ballOutOfGameViewBoundsHandler = {
             self.resetBall()
@@ -66,20 +87,6 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private var bricks = [Int:Brick]()
     
-    private var currentGameState: GameState {
-        get {
-            var currentGameState = GameState(
-                paddleOriginY: paddle.frame.origin.y,
-                ballSpeed: BreakoutBehavior.Constants.BallSpeed,
-                ballLinearVelocityX: breakoutBehavior.ballLinearVelocity.x,
-                ballLinearVelocityY: breakoutBehavior.ballLinearVelocity.y,
-                ballOriginX: breakoutBehavior.ball?.frame.origin.x ?? 0,
-                ballOriginY: breakoutBehavior.ball?.frame.origin.y ?? 0,
-                remainingBricks: bricks.keys.array)
-            return currentGameState
-        }
-    }
-    
     // Game started when ball pushing
     private var isGameStarted = false
     
@@ -94,7 +101,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         super.viewDidLoad()
         
         animator.addBehavior(breakoutBehavior)
-        createBricks()
+        createBricksLevel2()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
     }
@@ -112,7 +119,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         super.viewDidLayoutSubviews()
         
         if !isGameStarted {
-            resetGameState()
+            resetGameObjects()
         }
     }
     
@@ -173,10 +180,19 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     // MARK: - Bricks
     private func createBricks() {
         for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
+            bricks[index] = Brick(parentView: gameView, type: .Normal)
+        }
+    }
+    
+    private func createBricksLevel2() {
+        for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
             var brickView = UIView()
-            brickView.backgroundColor = UIColor.brownColor()
             gameView.addSubview(brickView)
-            bricks[index] = Brick(view: brickView)
+            if index >= 1 && index <= Constants.BrickColumnsCount {
+                bricks[index] = Brick(parentView: gameView, type: .Strong)
+            } else {
+                bricks[index] = Brick(parentView: gameView, type: .Normal)
+            }
         }
     }
     
@@ -203,6 +219,18 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         breakoutBehavior.addBarrier(UIBezierPath(rect: brickView.frame), named: index)
     }
     
+    // MARK: - Brick collision action
+    private func handleBrickCollisionActionAtIndex(index: Int) {
+        if let brick = bricks[index] {
+            switch brick.type {
+            case .Normal:
+                destroyBrickAtIndex(index)
+            case .Strong:
+                brick.type = .Normal
+            }
+        }
+    }
+    
     private func destroyBrickAtIndex(index: Int) {
         self.breakoutBehavior.removeBarrier(index)
         
@@ -224,7 +252,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     // MARK: - UICollisionBehaviorDelegate
     func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
         if let brickIndex = identifier as? Int {
-            destroyBrickAtIndex(brickIndex)
+            handleBrickCollisionActionAtIndex(brickIndex)
         }
     }
     
@@ -235,7 +263,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         alertView.show()
     }
     
-    private func resetGameState() {
+    private func resetGameObjects() {
         addGameViewBarriers()
         placeBricks()
         resetPaddle()
@@ -254,7 +282,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     // MARK: - UIAlertViewDelegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         createBricks()
-        resetGameState()
+        resetGameObjects()
     }
     
     // MARK: - User interaction

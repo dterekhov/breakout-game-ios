@@ -12,7 +12,6 @@ import UIKit
 class BreakoutBehavior: UIDynamicBehavior {
     struct Constants {
         static let BallElasticity: CGFloat = 1
-        static let BallSpeed: CGFloat = 0.5
     }
     
     // MARK: - Members
@@ -48,6 +47,8 @@ class BreakoutBehavior: UIDynamicBehavior {
     }
     
     var pauseLinearVelocity = CGPointZero
+    
+    var ballSpeed: CGFloat = 1
     
     var ballOutOfGameViewBoundsHandler: (() -> ())?
     
@@ -87,7 +88,7 @@ class BreakoutBehavior: UIDynamicBehavior {
         stopBall()
         
         let push = UIPushBehavior(items: [ball!], mode: UIPushBehaviorMode.Instantaneous)
-        push.magnitude = Constants.BallSpeed
+        push.magnitude = ballSpeed
         
         push.angle = CGFloat(Double(arc4random()) * M_PI * 2 / Double(UINT32_MAX))
         push.action = { [weak push] in
