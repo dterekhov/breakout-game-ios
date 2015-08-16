@@ -10,7 +10,7 @@ import UIKit
 
 /// Contains complex behavior (from simple behaviors) for different type views to animate
 class BreakoutBehavior: UIDynamicBehavior {
-    struct Constants {
+    private struct Constants {
         static let BallElasticity: CGFloat = 1
     }
     
@@ -41,12 +41,12 @@ class BreakoutBehavior: UIDynamicBehavior {
         return collider.items.filter{ $0 is UIView }.map{ $0 as! UIView }.first
     }
     
-    var ballLinearVelocity: CGPoint {
+    private var ballLinearVelocity: CGPoint {
         if ball == nil { return CGPointZero }
         return baseBehavior.linearVelocityForItem(ball!)
     }
     
-    var pauseLinearVelocity = CGPointZero
+    private var pauseLinearVelocity = CGPointZero
     
     var ballSpeed: CGFloat = 1
     

@@ -15,23 +15,24 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
-        static let BrickRowsCount = 1
+        static let BrickRowsCount = 3
         static let BrickColumnsCount = 5
         static let BrickInteritemSpacing: CGFloat = 4
         static let BrickHeight: CGFloat = 30
         static let BallSpeed: CGFloat = 0.5
-        static let BrickNormalTypeColor = UIColor.brownColor()
-        static let BrickStrongTypeColor = UIColor.lightGrayColor()
+        static let BrickTypeNormalColor = UIColor.brownColor()
+        static let BrickTypeSolidColor = UIColor.lightGrayColor()
+        static let BrickTypeShortPaddleForceColor = UIColor.blueColor()
         
         static let PlayImage = UIImage(named: "ico_play")
         static let PauseImage = UIImage(named: "ico_pause")
     }
     
-    
     private class Brick {
         private enum BrickType {
             case Normal
-            case Strong
+            case SolidBrick
+            case ShortPaddleForce
         }
         
         var view: UIView
@@ -51,9 +52,11 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         private func changeViewByType(type: BrickType) {
             switch type {
             case .Normal:
-                view.backgroundColor = Constants.BrickNormalTypeColor
-            case .Strong:
-                view.backgroundColor = Constants.BrickStrongTypeColor
+                view.backgroundColor = Constants.BrickTypeNormalColor
+            case .SolidBrick:
+                view.backgroundColor = Constants.BrickTypeSolidColor
+            case .ShortPaddleForce:
+                view.backgroundColor = Constants.BrickTypeShortPaddleForceColor
             }
         }
     }
@@ -177,20 +180,26 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         breakoutBehavior.addBarrier(UIBezierPath(ovalInRect: paddle.frame), named: Constants.PaddleBoundaryIdentifier)
     }
     
+    private func handleBrickShortPaddleForce() {
+        paddle.frame.size.width -= paddle.frame.width / 4
+        refreshBarrierInPaddle()
+    }
+    
     // MARK: - Bricks
     private func createBricks() {
         for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
-            bricks[index] = Brick(parentView: gameView, type: .Normal)
+            bricks[index] = Brick(parentView: gameView, type: .SolidBrick)
         }
     }
     
     private func createBricksLevel2() {
         for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
-            var brickView = UIView()
-            gameView.addSubview(brickView)
             if index >= 1 && index <= Constants.BrickColumnsCount {
-                bricks[index] = Brick(parentView: gameView, type: .Strong)
-            } else {
+                bricks[index] = Brick(parentView: gameView, type: .SolidBrick)
+            } else if index >= 1 + Constants.BrickColumnsCount && index <= Constants.BrickColumnsCount * 2 {
+                bricks[index] = Brick(parentView: gameView, type: .ShortPaddleForce)
+            }
+            else {
                 bricks[index] = Brick(parentView: gameView, type: .Normal)
             }
         }
@@ -225,8 +234,15 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
             switch brick.type {
             case .Normal:
                 destroyBrickAtIndex(index)
-            case .Strong:
-                brick.type = .Normal
+            case .SolidBrick:
+                // Hack: handle case after little delay to except instant double collision action
+                var dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(0.05 * Double(NSEC_PER_SEC)))
+                dispatch_after(dispatchTime, dispatch_get_main_queue(), { () -> Void in
+                    brick.type = .Normal
+                })
+            case .ShortPaddleForce:
+                destroyBrickAtIndex(index)
+                handleBrickShortPaddleForce()
             }
         }
     }
@@ -281,7 +297,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     // MARK: - UIAlertViewDelegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        createBricks()
+        createBricksLevel2()
         resetGameObjects()
     }
     
