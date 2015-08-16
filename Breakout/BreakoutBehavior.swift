@@ -10,7 +10,7 @@ import UIKit
 
 /// Contains complex behavior (from simple behaviors) for different type views to animate
 class BreakoutBehavior: UIDynamicBehavior {
-    private struct Constants {
+    struct Constants {
         static let BallElasticity: CGFloat = 1
         static let BallSpeed: CGFloat = 0.5
     }
@@ -41,6 +41,13 @@ class BreakoutBehavior: UIDynamicBehavior {
     var ball: UIView? {
         return collider.items.filter{ $0 is UIView }.map{ $0 as! UIView }.first
     }
+    
+    var ballLinearVelocity: CGPoint {
+        if ball == nil { return CGPointZero }
+        return baseBehavior.linearVelocityForItem(ball!)
+    }
+    
+    var pauseLinearVelocity = CGPointZero
     
     var ballOutOfGameViewBoundsHandler: (() -> ())?
     
@@ -92,13 +99,21 @@ class BreakoutBehavior: UIDynamicBehavior {
     }
     
     func stopBall() {
-        if ball != nil {
-            let velocity = baseBehavior.linearVelocityForItem(ball!)
-            baseBehavior.addLinearVelocity(CGPoint(x: -velocity.x, y: -velocity.y), forItem: ball!)
-        }
+        pauseLinearVelocity = ballLinearVelocity
+        baseBehavior.addLinearVelocity(CGPoint(x: -ballLinearVelocity.x, y: -ballLinearVelocity.y), forItem: ball!)
     }
     
-    // MARK:
+    func continueBall() {
+        if ball == nil { return }
+        baseBehavior.addLinearVelocity(pauseLinearVelocity, forItem: ball!)
+        pauseLinearVelocity = CGPointZero
+    }
+    
+    func isBallInMotion() -> Bool {
+        return ballLinearVelocity != CGPointZero
+    }
+    
+    // MARK: Barriers
     func addBarrier(path: UIBezierPath, named name: NSCopying) {
         collider.removeBoundaryWithIdentifier(name)
         collider.addBoundaryWithIdentifier(name, forPath: path)

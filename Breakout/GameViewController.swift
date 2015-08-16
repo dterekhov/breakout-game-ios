@@ -15,18 +15,32 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
-        static let BrickRowsCount = 1//3
-        static let BrickColumnsCount = 1//5
+        static let BrickRowsCount = 3//3
+        static let BrickColumnsCount = 5//5
         static let BrickInteritemSpacing: CGFloat = 4
         static let BrickHeight: CGFloat = 30
+        
+        static let PlayImage = UIImage(named: "ico_play")
+        static let PauseImage = UIImage(named: "ico_pause")
     }
     
     private struct Brick {
         var view: UIView
     }
     
+    private struct GameState {
+        var paddleOriginY: CGFloat
+        var ballSpeed: CGFloat
+        var ballLinearVelocityX: CGFloat
+        var ballLinearVelocityY: CGFloat
+        var ballOriginX: CGFloat
+        var ballOriginY: CGFloat
+        var remainingBricks: [Int]
+    }
+    
     // MARK: - Members
     @IBOutlet private weak var gameView: BezierPathsView!
+    @IBOutlet weak var pauseButton: UIButton!
     
     private lazy var breakoutBehavior: BreakoutBehavior = {
         let breakoutBehavior = BreakoutBehavior()
@@ -42,8 +56,6 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         return lazilyCreatedDynamicAnimator
     }()
     
-    private var ball: UIView?
-    
     private lazy var paddle: UIView = {
         let paddle = UIView()
         paddle.layer.cornerRadius = Constants.PaddleCornerRadius
@@ -54,26 +66,65 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private var bricks = [Int:Brick]()
     
+    private var currentGameState: GameState {
+        get {
+            var currentGameState = GameState(
+                paddleOriginY: paddle.frame.origin.y,
+                ballSpeed: BreakoutBehavior.Constants.BallSpeed,
+                ballLinearVelocityX: breakoutBehavior.ballLinearVelocity.x,
+                ballLinearVelocityY: breakoutBehavior.ballLinearVelocity.y,
+                ballOriginX: breakoutBehavior.ball?.frame.origin.x ?? 0,
+                ballOriginY: breakoutBehavior.ball?.frame.origin.y ?? 0,
+                remainingBricks: bricks.keys.array)
+            return currentGameState
+        }
+    }
+    
+    // Game started when ball pushing
+    private var isGameStarted = false
+    
+    private var isGamePaused: Bool {
+        // Pause state:
+        // Ball was pushed but ball now not in motion
+        return isGameStarted && !breakoutBehavior.isBallInMotion()
+    }
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         animator.addBehavior(breakoutBehavior)
         createBricks()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        pauseGame()
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        resetGameState()
+        if !isGameStarted {
+            resetGameState()
+        }
     }
     
     // MARK: - Gestures
     @IBAction private func gameViewTap(gesture: UITapGestureRecognizer) {
+        if isGamePaused { return } // On pause can't push the ball
         breakoutBehavior.pushBall()
+        isGameStarted = true
     }
     
     @IBAction private func gameViewSwipe(gesture: UIPanGestureRecognizer) {
+        if isGamePaused { return } // On pause can't move the paddle
         if gesture.state == .Changed {
             placePaddle(deltaOriginX: gesture.translationInView(gameView).x)
             gesture.setTranslation(CGPointZero, inView: gameView)
@@ -96,6 +147,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
             ball.backgroundColor = UIColor.lightGrayColor()
             breakoutBehavior.addBallBehavior(ball)
         }
+        
+        isGameStarted = false
     }
     
     // MARK: - Paddle
@@ -189,10 +242,28 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         resetBall()
     }
     
+    @objc private func pauseGame() -> Bool {
+        if breakoutBehavior.isBallInMotion() {
+            breakoutBehavior.stopBall()
+            pauseButton.setImage(Constants.PlayImage, forState: UIControlState.Normal)
+            return true
+        }
+        return false
+    }
+    
     // MARK: - UIAlertViewDelegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         createBricks()
         resetGameState()
+    }
+    
+    // MARK: - User interaction
+    @IBAction private func pauseButtonTap() {
+        // Pause or resume the game
+        if !pauseGame() {
+            breakoutBehavior.continueBall()
+            pauseButton.setImage(Constants.PauseImage, forState: UIControlState.Normal)
+        }
     }
     
     // MARK: - Helpers
