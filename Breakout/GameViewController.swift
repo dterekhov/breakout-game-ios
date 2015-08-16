@@ -167,7 +167,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     }
     
     private func refreshBarrierInPaddle() {
-        breakoutBehavior.addBarrier(UIBezierPath(roundedRect: paddle.frame, cornerRadius: Constants.PaddleCornerRadius), named: Constants.PaddleBoundaryIdentifier)
+        breakoutBehavior.addBarrier(UIBezierPath(ovalInRect: paddle.frame), named: Constants.PaddleBoundaryIdentifier)
     }
     
     // MARK: - Bricks
