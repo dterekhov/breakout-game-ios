@@ -14,6 +14,8 @@
 		0910A25A1B6D2FFC00730496 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0910A2591B6D2FFC00730496 /* Images.xcassets */; };
 		0910A25D1B6D2FFC00730496 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0910A25B1B6D2FFC00730496 /* LaunchScreen.xib */; };
 		0910A2691B6D2FFC00730496 /* BreakoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0910A2681B6D2FFC00730496 /* BreakoutTests.swift */; };
+		097113C21B81D02100749DA7 /* Brick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097113C11B81D02100749DA7 /* Brick.swift */; };
+		097113C41B81D1DF00749DA7 /* BrickBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097113C31B81D1DF00749DA7 /* BrickBuilder.swift */; };
 		09D105091B6E686700C1CADC /* BreakoutBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D105081B6E686700C1CADC /* BreakoutBehavior.swift */; };
 		09D1050B1B6E98B100C1CADC /* BezierPathsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D1050A1B6E98B100C1CADC /* BezierPathsView.swift */; };
 /* End PBXBuildFile section */
@@ -40,6 +42,8 @@
 		0910A2621B6D2FFC00730496 /* BreakoutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreakoutTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0910A2671B6D2FFC00730496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0910A2681B6D2FFC00730496 /* BreakoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakoutTests.swift; sourceTree = "<group>"; };
+		097113C11B81D02100749DA7 /* Brick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Brick.swift; sourceTree = "<group>"; };
+		097113C31B81D1DF00749DA7 /* BrickBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrickBuilder.swift; sourceTree = "<group>"; };
 		09D105081B6E686700C1CADC /* BreakoutBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakoutBehavior.swift; sourceTree = "<group>"; };
 		09D1050A1B6E98B100C1CADC /* BezierPathsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BezierPathsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,15 +87,17 @@
 		0910A24D1B6D2FFB00730496 /* Breakout */ = {
 			isa = PBXGroup;
 			children = (
+				0910A2561B6D2FFC00730496 /* Main.storyboard */,
+				0910A25B1B6D2FFC00730496 /* LaunchScreen.xib */,
+				0910A2591B6D2FFC00730496 /* Images.xcassets */,
 				0910A2501B6D2FFB00730496 /* AppDelegate.swift */,
 				0910A2521B6D2FFB00730496 /* GameViewController.swift */,
+				097113C31B81D1DF00749DA7 /* BrickBuilder.swift */,
+				097113C11B81D02100749DA7 /* Brick.swift */,
 				0910A2541B6D2FFB00730496 /* SettingsViewController.swift */,
-				0910A2561B6D2FFC00730496 /* Main.storyboard */,
-				0910A2591B6D2FFC00730496 /* Images.xcassets */,
-				0910A25B1B6D2FFC00730496 /* LaunchScreen.xib */,
-				0910A24E1B6D2FFB00730496 /* Supporting Files */,
 				09D105081B6E686700C1CADC /* BreakoutBehavior.swift */,
 				09D1050A1B6E98B100C1CADC /* BezierPathsView.swift */,
+				0910A24E1B6D2FFB00730496 /* Supporting Files */,
 			);
 			path = Breakout;
 			sourceTree = "<group>";
@@ -222,10 +228,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				0910A2551B6D2FFB00730496 /* SettingsViewController.swift in Sources */,
+				097113C41B81D1DF00749DA7 /* BrickBuilder.swift in Sources */,
 				09D1050B1B6E98B100C1CADC /* BezierPathsView.swift in Sources */,
 				0910A2511B6D2FFB00730496 /* AppDelegate.swift in Sources */,
 				09D105091B6E686700C1CADC /* BreakoutBehavior.swift in Sources */,
 				0910A2531B6D2FFB00730496 /* GameViewController.swift in Sources */,
+				097113C21B81D02100749DA7 /* Brick.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

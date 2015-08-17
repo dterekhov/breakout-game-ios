@@ -15,50 +15,10 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
-        static let BrickRowsCount = 3
-        static let BrickColumnsCount = 5
-        static let BrickInteritemSpacing: CGFloat = 4
-        static let BrickHeight: CGFloat = 30
         static let BallSpeed: CGFloat = 0.5
-        static let BrickTypeNormalColor = UIColor.brownColor()
-        static let BrickTypeSolidColor = UIColor.lightGrayColor()
-        static let BrickTypeShortPaddleForceColor = UIColor.blueColor()
         
         static let PlayImage = UIImage(named: "ico_play")
         static let PauseImage = UIImage(named: "ico_pause")
-    }
-    
-    private class Brick {
-        private enum BrickType {
-            case Normal
-            case SolidBrick
-            case ShortPaddleForce
-        }
-        
-        var view: UIView
-        var type: BrickType {
-            didSet {
-                changeViewByType(type)
-            }
-        }
-        
-        init(parentView: UIView, type: BrickType) {
-            self.type = type
-            self.view = UIView()
-            changeViewByType(type)
-            parentView.addSubview(self.view)
-        }
-        
-        private func changeViewByType(type: BrickType) {
-            switch type {
-            case .Normal:
-                view.backgroundColor = Constants.BrickTypeNormalColor
-            case .SolidBrick:
-                view.backgroundColor = Constants.BrickTypeSolidColor
-            case .ShortPaddleForce:
-                view.backgroundColor = Constants.BrickTypeShortPaddleForceColor
-            }
-        }
     }
     
     // MARK: - Members
@@ -77,6 +37,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private lazy var animator: UIDynamicAnimator = {
         let lazilyCreatedDynamicAnimator = UIDynamicAnimator(referenceView: self.gameView)
+        lazilyCreatedDynamicAnimator.addBehavior(self.breakoutBehavior)
         return lazilyCreatedDynamicAnimator
     }()
     
@@ -88,8 +49,6 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         return paddle
     }()
     
-    private var bricks = [Int:Brick]()
-    
     // Game started when ball pushing
     private var isGameStarted = false
     
@@ -99,12 +58,19 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         return isGameStarted && !breakoutBehavior.isBallInMotion()
     }
     
+    private lazy var brickBuilder: BrickBuilder = {
+        var brickBuilder = BrickBuilder(parentView: self.gameView, breakoutBehavior: self.breakoutBehavior)
+        brickBuilder.allBricksDestroyedHandler = {
+            self.allBricksDestroyedHandler()
+        }
+        return brickBuilder
+    }()
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        animator.addBehavior(breakoutBehavior)
-        createBricksLevel2()
+        brickBuilder.buildBricksLevel2()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
     }
@@ -123,25 +89,6 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         
         if !isGameStarted {
             resetGameObjects()
-        }
-    }
-    
-    // MARK: - Gestures
-    @IBAction private func gameViewTap(gesture: UITapGestureRecognizer) {
-        // On pause can't push the ball
-        if isGamePaused {
-            continueGame()
-        } else {
-            breakoutBehavior.pushBall()
-            isGameStarted = true
-        }
-    }
-    
-    @IBAction private func gameViewSwipe(gesture: UIPanGestureRecognizer) {
-        if isGamePaused { return } // On pause can't move the paddle
-        if gesture.state == .Changed {
-            placePaddle(deltaOriginX: gesture.translationInView(gameView).x)
-            gesture.setTranslation(CGPointZero, inView: gameView)
         }
     }
     
@@ -184,60 +131,18 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         breakoutBehavior.addBarrier(UIBezierPath(ovalInRect: paddle.frame), named: Constants.PaddleBoundaryIdentifier)
     }
     
-    private func handleBrickShortPaddleForce() {
-        paddle.frame.size.width -= paddle.frame.width / 4
-        refreshBarrierInPaddle()
-    }
-    
-    // MARK: - Bricks
-    private func createBricks() {
-        for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
-            bricks[index] = Brick(parentView: gameView, type: .SolidBrick)
+    // MARK: - UICollisionBehaviorDelegate, collision handlers
+    func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
+        if let brickIndex = identifier as? Int {
+            handleBrickCollisionActionAtIndex(brickIndex)
         }
     }
     
-    private func createBricksLevel2() {
-        for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
-            if index >= 1 && index <= Constants.BrickColumnsCount {
-                bricks[index] = Brick(parentView: gameView, type: .SolidBrick)
-            } else if index >= 1 + Constants.BrickColumnsCount && index <= Constants.BrickColumnsCount * 2 {
-                bricks[index] = Brick(parentView: gameView, type: .ShortPaddleForce)
-            }
-            else {
-                bricks[index] = Brick(parentView: gameView, type: .Normal)
-            }
-        }
-    }
-    
-    private func placeBricks() {
-        let totalSpaceItemsWidth = CGFloat(Constants.BrickColumnsCount + 1) * Constants.BrickInteritemSpacing
-        let brickWidth = (gameView.bounds.width - totalSpaceItemsWidth) / CGFloat(Constants.BrickColumnsCount)
-        let brickSize = CGSize(width: brickWidth, height: Constants.BrickHeight)
-        
-        var origin = CGPoint(x: Constants.BrickInteritemSpacing, y: Constants.BrickInteritemSpacing)
-        for row in 1...Constants.BrickRowsCount {
-            for column in 1...Constants.BrickColumnsCount {
-                let index = (row - 1) * Constants.BrickColumnsCount + column
-                if let brick = bricks[index] {
-                    brick.view.frame = CGRect(origin: origin, size: brickSize)
-                    addBrickBarrier(brick.view, index: index)
-                }
-                origin.x += brickWidth + Constants.BrickInteritemSpacing
-            }
-            origin = CGPoint(x: Constants.BrickInteritemSpacing, y: origin.y + Constants.BrickHeight + Constants.BrickInteritemSpacing)
-        }
-    }
-    
-    private func addBrickBarrier(brickView: UIView, index: Int) {
-        breakoutBehavior.addBarrier(UIBezierPath(rect: brickView.frame), named: index)
-    }
-    
-    // MARK: - Brick collision action
     private func handleBrickCollisionActionAtIndex(index: Int) {
-        if let brick = bricks[index] {
+        if let brick = brickBuilder.bricks[index] {
             switch brick.type {
             case .Normal:
-                destroyBrickAtIndex(index)
+                brickBuilder.destroyBrickAtIndex(index)
             case .SolidBrick:
                 // Hack: handle case after little delay to except instant double collision action
                 var dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(0.05 * Double(NSEC_PER_SEC)))
@@ -245,35 +150,15 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
                     brick.type = .Normal
                 })
             case .ShortPaddleForce:
-                destroyBrickAtIndex(index)
+                brickBuilder.destroyBrickAtIndex(index)
                 handleBrickShortPaddleForce()
             }
         }
     }
     
-    private func destroyBrickAtIndex(index: Int) {
-        self.breakoutBehavior.removeBarrier(index)
-        
-        if let brickView = bricks[index]?.view {
-            UIView.transitionWithView(brickView, duration:1.0, options: UIViewAnimationOptions.TransitionFlipFromTop, animations: { () -> Void in
-                brickView.alpha = 0.5
-                }, completion: {
-                    (success) -> Void in
-                    brickView.removeFromSuperview()
-                    self.bricks[index] = nil
-                    
-                    if self.bricks.count == 0 {
-                        self.allBricksDestroyedHandler()
-                    }
-            })
-        }
-    }
-    
-    // MARK: - UICollisionBehaviorDelegate
-    func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
-        if let brickIndex = identifier as? Int {
-            handleBrickCollisionActionAtIndex(brickIndex)
-        }
+    private func handleBrickShortPaddleForce() {
+        paddle.frame.size.width -= paddle.frame.width / 4
+        refreshBarrierInPaddle()
     }
     
     // MARK: - Game
@@ -285,7 +170,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private func resetGameObjects() {
         addGameViewBarriers()
-        placeBricks()
+        brickBuilder.placeBricks()
         resetPaddle()
         resetBall()
     }
@@ -306,11 +191,29 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     // MARK: - UIAlertViewDelegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        createBricksLevel2()
+        brickBuilder.buildBricksLevel2()
         resetGameObjects()
     }
     
     // MARK: - User interaction
+    @IBAction private func gameViewTap(gesture: UITapGestureRecognizer) {
+        // On pause can't push the ball
+        if isGamePaused {
+            continueGame()
+        } else {
+            breakoutBehavior.pushBall()
+            isGameStarted = true
+        }
+    }
+    
+    @IBAction private func gameViewSwipe(gesture: UIPanGestureRecognizer) {
+        if isGamePaused { return } // On pause can't move the paddle
+        if gesture.state == .Changed {
+            placePaddle(deltaOriginX: gesture.translationInView(gameView).x)
+            gesture.setTranslation(CGPointZero, inView: gameView)
+        }
+    }
+    
     @IBAction private func pauseButtonTap() {
         // Pause or resume the game
         if !pauseGame() {
