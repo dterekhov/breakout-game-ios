@@ -128,9 +128,13 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     // MARK: - Gestures
     @IBAction private func gameViewTap(gesture: UITapGestureRecognizer) {
-        if isGamePaused { return } // On pause can't push the ball
-        breakoutBehavior.pushBall()
-        isGameStarted = true
+        // On pause can't push the ball
+        if isGamePaused {
+            continueGame()
+        } else {
+            breakoutBehavior.pushBall()
+            isGameStarted = true
+        }
     }
     
     @IBAction private func gameViewSwipe(gesture: UIPanGestureRecognizer) {
@@ -295,6 +299,11 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         return false
     }
     
+    private func continueGame() {
+        breakoutBehavior.continueBall()
+        pauseButton.setImage(Constants.PauseImage, forState: UIControlState.Normal)
+    }
+    
     // MARK: - UIAlertViewDelegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         createBricksLevel2()
@@ -305,8 +314,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     @IBAction private func pauseButtonTap() {
         // Pause or resume the game
         if !pauseGame() {
-            breakoutBehavior.continueBall()
-            pauseButton.setImage(Constants.PauseImage, forState: UIControlState.Normal)
+            continueGame()
         }
     }
     
