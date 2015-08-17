@@ -39,13 +39,29 @@
                                     <action selector="pauseButtonTap" destination="9pv-A4-QxB" eventType="touchUpInside" id="xSw-ac-9hC"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BALLS: ⦁⦁⦁" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Obj-Qe-c8y">
+                                <rect key="frame" x="8" y="522.5" width="107" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 POINTS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M0d-eZ-eWO">
+                                <rect key="frame" x="515.5" y="522.5" width="76.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Obj-Qe-c8y" firstAttribute="leading" secondItem="H5j-HZ-Ve2" secondAttribute="leading" constant="8" id="1If-YU-LRh"/>
                             <constraint firstAttribute="trailing" secondItem="H5j-HZ-Ve2" secondAttribute="trailing" id="KF4-g2-WCp"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="LDs-1L-bvD"/>
+                            <constraint firstItem="M0d-eZ-eWO" firstAttribute="bottom" secondItem="H5j-HZ-Ve2" secondAttribute="bottom" constant="-8" id="MKD-s2-V8l"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="S27-Y2-giR"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="bottom" secondItem="4ug-Mw-9AY" secondAttribute="top" id="UzW-Xl-Fut"/>
+                            <constraint firstItem="H5j-HZ-Ve2" firstAttribute="trailing" secondItem="M0d-eZ-eWO" secondAttribute="trailing" constant="8" id="VKi-oF-icy"/>
+                            <constraint firstItem="H5j-HZ-Ve2" firstAttribute="bottom" secondItem="Obj-Qe-c8y" secondAttribute="bottom" constant="8" id="ZCm-23-vak"/>
                             <constraint firstItem="Drd-x6-dVp" firstAttribute="trailing" secondItem="H5j-HZ-Ve2" secondAttribute="trailing" id="hIS-35-eGy"/>
                             <constraint firstItem="Drd-x6-dVp" firstAttribute="top" secondItem="H5j-HZ-Ve2" secondAttribute="top" constant="28" id="izC-A5-2mK"/>
                         </constraints>
@@ -53,7 +69,9 @@
                     <tabBarItem key="tabBarItem" title="Breakout" image="ico_breakout" id="acW-dT-cKf"/>
                     <connections>
                         <outlet property="gameView" destination="H5j-HZ-Ve2" id="vr0-6c-RRk"/>
+                        <outlet property="livesLabel" destination="Obj-Qe-c8y" id="yvb-J2-nRi"/>
                         <outlet property="pauseButton" destination="Drd-x6-dVp" id="4Ek-CD-6XQ"/>
+                        <outlet property="scoreLabel" destination="M0d-eZ-eWO" id="axg-CA-1UY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>

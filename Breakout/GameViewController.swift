@@ -11,11 +11,12 @@ import UIKit
 class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlertViewDelegate {
     private struct Constants {
         static let PaddleHeight: CGFloat = 10
-        static let PaddleBottomIndent: CGFloat = 10
+        static let PaddleBottomIndent: CGFloat = 35
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
         static let BallSpeed: CGFloat = 0.5
+        static let LivesCount = 3
         
         static let PlayImage = UIImage(named: "ico_play")
         static let PauseImage = UIImage(named: "ico_pause")
@@ -24,13 +25,18 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     // MARK: - Members
     @IBOutlet private weak var gameView: BezierPathsView!
     @IBOutlet weak var pauseButton: UIButton!
+    @IBOutlet weak var livesLabel: UILabel!
+    @IBOutlet weak var scoreLabel: UILabel!
     
     private lazy var breakoutBehavior: BreakoutBehavior = {
         let breakoutBehavior = BreakoutBehavior()
         breakoutBehavior.ballSpeed = Constants.BallSpeed
         breakoutBehavior.collisionDelegate = self
         breakoutBehavior.ballOutOfGameViewBoundsHandler = {
-            self.resetBall()
+            self.livesCount--
+            if self.livesCount > 0 {
+                self.resetBall()
+            }
         }
         return breakoutBehavior
     }()
@@ -61,16 +67,42 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     private lazy var brickBuilder: BrickBuilder = {
         var brickBuilder = BrickBuilder(parentView: self.gameView, breakoutBehavior: self.breakoutBehavior)
         brickBuilder.allBricksDestroyedHandler = {
-            self.allBricksDestroyedHandler()
+            self.completeLevelAlert()
         }
         return brickBuilder
     }()
+    
+    var livesCount = Constants.LivesCount {
+        didSet {
+            // Refresh livesLabel
+            var livesString = ""
+            while count(livesString) != livesCount {
+                livesString += "⦁"
+            }
+            livesLabel.text = "BALLS: " + livesString
+            
+            // Player lose handler
+            if isPlayerLose {
+                gameLoseAlert()
+            }
+        }
+    }
+    
+    var isPlayerLose: Bool {
+        return livesCount == 0
+    }
+    
+    var scores = 0 {
+        didSet {
+            scoreLabel.text = "\(scores) POINTS"
+        }
+    }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        brickBuilder.buildBricksLevel2()
+        brickBuilder.buildBricks()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
     }
@@ -174,9 +206,15 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         pauseButton.setImage(Constants.PauseImage, forState: UIControlState.Normal)
     }
     
-    private func allBricksDestroyedHandler() {
+    private func completeLevelAlert() {
         breakoutBehavior.stopBall()
-        let alertView = UIAlertView(title: "Congratulations!", message: "You completed level. Play again?", delegate: self, cancelButtonTitle: "Ok")
+        let alertView = UIAlertView(title: "Congratulations!", message: "You complete a level", delegate: self, cancelButtonTitle: "Ok")
+        alertView.show()
+    }
+    
+    private func gameLoseAlert() {
+        breakoutBehavior.stopBall()
+        let alertView = UIAlertView(title: "You lose", message: "Try again?", delegate: self, cancelButtonTitle: "Ok")
         alertView.show()
     }
     
@@ -187,10 +225,20 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         resetBall()
     }
     
+    private func newGame() {
+        if isPlayerLose {
+            brickBuilder.buildBricks()
+        } else {
+            brickBuilder.buildBricksForNextLevel()
+        }
+        livesCount = Constants.LivesCount
+        scores = 0
+        resetGameObjects()
+    }
+    
     // MARK: - UIAlertViewDelegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        brickBuilder.buildBricksLevel2()
-        resetGameObjects()
+        newGame()
     }
     
     // MARK: - User interaction

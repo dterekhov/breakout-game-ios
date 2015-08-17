@@ -100,6 +100,7 @@ class BreakoutBehavior: UIDynamicBehavior {
     }
     
     func stopBall() {
+        if ball == nil { return }
         pauseLinearVelocity = ballLinearVelocity
         baseBehavior.addLinearVelocity(CGPoint(x: -ballLinearVelocity.x, y: -ballLinearVelocity.y), forItem: ball!)
     }

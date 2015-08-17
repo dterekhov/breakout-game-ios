@@ -16,8 +16,14 @@ class BrickBuilder {
         static let BrickHeight: CGFloat = 30
     }
     
+    private enum GameLevel {
+        case GameLevel1
+        case GameLevel2
+    }
+    
     var bricks = [Int:Brick]()
     var allBricksDestroyedHandler: (() -> ())?
+    private var currentGameLevel = GameLevel.GameLevel1
     
     private let parentView: UIView
     private let breakoutBehavior: BreakoutBehavior
@@ -27,13 +33,34 @@ class BrickBuilder {
         self.breakoutBehavior = breakoutBehavior
     }
     
-    func buildBricksLevel1() {
-        for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
-            bricks[index] = Brick(parentView: parentView, type: .SolidBrick)
+    func buildBricks() {
+        // Remove old brick views
+        for brick in bricks.values.array {
+            brick.view.removeFromSuperview()
+        }
+        
+        switch currentGameLevel {
+        case .GameLevel1:
+            buildBricksLevel1()
+        case .GameLevel2:
+            buildBricksLevel2()
         }
     }
     
-    func buildBricksLevel2() {
+    func buildBricksForNextLevel() {
+        if currentGameLevel == .GameLevel1 {
+            currentGameLevel = .GameLevel2
+        }
+        buildBricks()
+    }
+    
+    private func buildBricksLevel1() {
+        for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
+            bricks[index] = Brick(parentView: parentView, type: .Normal)
+        }
+    }
+    
+    private func buildBricksLevel2() {
         for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
             if index >= 1 && index <= Constants.BrickColumnsCount {
                 bricks[index] = Brick(parentView: parentView, type: .SolidBrick)
