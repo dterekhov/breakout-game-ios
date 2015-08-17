@@ -162,6 +162,18 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     }
     
     // MARK: - Game
+    @objc private func pauseGame() {
+        if breakoutBehavior.isBallInMotion() {
+            breakoutBehavior.stopBall()
+            pauseButton.setImage(Constants.PlayImage, forState: UIControlState.Normal)
+        }
+    }
+    
+    private func continueGame() {
+        breakoutBehavior.continueBall()
+        pauseButton.setImage(Constants.PauseImage, forState: UIControlState.Normal)
+    }
+    
     private func allBricksDestroyedHandler() {
         breakoutBehavior.stopBall()
         let alertView = UIAlertView(title: "Congratulations!", message: "You completed level. Play again?", delegate: self, cancelButtonTitle: "Ok")
@@ -173,20 +185,6 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         brickBuilder.placeBricks()
         resetPaddle()
         resetBall()
-    }
-    
-    @objc private func pauseGame() -> Bool {
-        if breakoutBehavior.isBallInMotion() {
-            breakoutBehavior.stopBall()
-            pauseButton.setImage(Constants.PlayImage, forState: UIControlState.Normal)
-            return true
-        }
-        return false
-    }
-    
-    private func continueGame() {
-        breakoutBehavior.continueBall()
-        pauseButton.setImage(Constants.PauseImage, forState: UIControlState.Normal)
     }
     
     // MARK: - UIAlertViewDelegate
@@ -216,7 +214,9 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     @IBAction private func pauseButtonTap() {
         // Pause or resume the game
-        if !pauseGame() {
+        if breakoutBehavior.isBallInMotion() {
+            pauseGame()
+        } else {
             continueGame()
         }
     }
