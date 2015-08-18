@@ -27,6 +27,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     @IBOutlet weak var pauseButton: UIButton!
     @IBOutlet weak var livesLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var comboLabel: UILabel!
     
     private lazy var breakoutBehavior: BreakoutBehavior = {
         let breakoutBehavior = BreakoutBehavior()
@@ -99,7 +100,13 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         }
     }
     
-    var comboBrickCollisionsCount = 0
+    var comboBrickCollisionsCount = 0 {
+        didSet {
+            if comboBrickCollisionsCount > 1 {
+                showComboLabel()
+            }
+        }
+    }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -293,5 +300,15 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         var rect = gameView.bounds;
         rect.size.height *= 2
         breakoutBehavior.addBarrier(UIBezierPath(rect: rect), named: Constants.GameViewBoundaryIdentifier)
+    }
+    
+    private func showComboLabel() {
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            self.comboLabel.alpha = 1.0
+        }) { (finished) -> Void in
+            UIView.animateWithDuration(0.2, animations: { () -> Void in
+                self.comboLabel.alpha = 0.0
+            })
+        }
     }
 }

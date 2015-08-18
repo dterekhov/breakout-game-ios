@@ -18,8 +18,20 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5j-HZ-Ve2" userLabel="gameView" customClass="BezierPathsView" customModule="Breakout" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Combo!" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uyU-kN-931" userLabel="comboLabel">
+                                        <rect key="frame" x="230" y="252" width="140.5" height="48"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                                        <color key="textColor" red="1" green="0.40000000596046448" blue="0.40000000596046448" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="centerX" secondItem="uyU-kN-931" secondAttribute="centerX" id="bqb-Bt-WRd"/>
+                                    <constraint firstAttribute="centerY" secondItem="uyU-kN-931" secondAttribute="centerY" constant="-0.5" id="znY-O2-ExY"/>
+                                </constraints>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="Att-lr-qvK" appends="YES" id="7wZ-7w-3Jf"/>
                                     <outletCollection property="gestureRecognizers" destination="N9J-Zt-0qh" appends="YES" id="yD5-ey-CWV"/>
@@ -39,14 +51,14 @@
                                     <action selector="pauseButtonTap" destination="9pv-A4-QxB" eventType="touchUpInside" id="xSw-ac-9hC"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BALLS: ⦁⦁⦁" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Obj-Qe-c8y">
-                                <rect key="frame" x="8" y="522.5" width="107" height="20.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BALLS: ⦁⦁⦁" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Obj-Qe-c8y" userLabel="livesLabel">
+                                <rect key="frame" x="8" y="522" width="107" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 POINTS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M0d-eZ-eWO">
-                                <rect key="frame" x="515.5" y="522.5" width="76.5" height="20.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 POINTS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M0d-eZ-eWO" userLabel="scoreLabel">
+                                <rect key="frame" x="515" y="522" width="76.5" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
@@ -68,6 +80,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Breakout" image="ico_breakout" id="acW-dT-cKf"/>
                     <connections>
+                        <outlet property="comboLabel" destination="uyU-kN-931" id="R1i-d1-Rgd"/>
                         <outlet property="gameView" destination="H5j-HZ-Ve2" id="vr0-6c-RRk"/>
                         <outlet property="livesLabel" destination="Obj-Qe-c8y" id="yvb-J2-nRi"/>
                         <outlet property="pauseButton" destination="Drd-x6-dVp" id="4Ek-CD-6XQ"/>
