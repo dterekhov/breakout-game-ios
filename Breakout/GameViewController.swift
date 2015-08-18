@@ -67,6 +67,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     private lazy var brickBuilder: BrickBuilder = {
         var brickBuilder = BrickBuilder(parentView: self.gameView, breakoutBehavior: self.breakoutBehavior)
         brickBuilder.allBricksDestroyedHandler = {
+            self.score += self.livesCount // Score for saved lives
             self.completeLevelAlert()
         }
         return brickBuilder
@@ -92,11 +93,13 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         return livesCount == 0
     }
     
-    var scores = 0 {
+    var score = 0 {
         didSet {
-            scoreLabel.text = "\(scores) POINTS"
+            scoreLabel.text = "\(score) POINTS"
         }
     }
+    
+    var comboBrickCollisionsCount = 0
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -166,12 +169,18 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     // MARK: - UICollisionBehaviorDelegate, collision handlers
     func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
         if let brickIndex = identifier as? Int {
+            comboBrickCollisionsCount++ // Several collisions in sequence
             handleBrickCollisionActionAtIndex(brickIndex)
+        } else if identifier as? String == Constants.PaddleBoundaryIdentifier {
+            comboBrickCollisionsCount = 0
         }
     }
     
     private func handleBrickCollisionActionAtIndex(index: Int) {
         if let brick = brickBuilder.bricks[index] {
+            // Second collision and further give you 2 points instead 1 point
+            score += comboBrickCollisionsCount > 1 ? 2 : 1
+            
             switch brick.type {
             case .Normal:
                 brickBuilder.destroyBrickAtIndex(index)
@@ -208,13 +217,13 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private func completeLevelAlert() {
         breakoutBehavior.stopBall()
-        let alertView = UIAlertView(title: "Congratulations!", message: "You complete a level", delegate: self, cancelButtonTitle: "Ok")
+        let alertView = UIAlertView(title: "Congratulations!", message: "You complete a level\n\nYour score: \(score) points\n+\(livesCount) saved lives", delegate: self, cancelButtonTitle: "Ok")
         alertView.show()
     }
     
     private func gameLoseAlert() {
         breakoutBehavior.stopBall()
-        let alertView = UIAlertView(title: "You lose", message: "Try again?", delegate: self, cancelButtonTitle: "Ok")
+        let alertView = UIAlertView(title: "You lose", message: "Your score: \(score) points\n\nTry again?", delegate: self, cancelButtonTitle: "Ok")
         alertView.show()
     }
     
@@ -232,7 +241,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
             brickBuilder.buildBricksForNextLevel()
         }
         livesCount = Constants.LivesCount
-        scores = 0
+        score = 0
         resetGameObjects()
     }
     
