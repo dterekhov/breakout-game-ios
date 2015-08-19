@@ -119,7 +119,13 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        breakoutBehavior.gravityOn = false
         pauseGame()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        breakoutBehavior.gravityOn = true
     }
     
     deinit {
@@ -129,7 +135,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        if !isGameStarted {
+        if !isGameStarted && livesCount > 0 {
             resetGameObjects()
         }
     }

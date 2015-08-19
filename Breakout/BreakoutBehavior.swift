@@ -15,6 +15,15 @@ class BreakoutBehavior: UIDynamicBehavior {
     }
     
     // MARK: - Members
+    private lazy var baseBehavior: UIDynamicItemBehavior = {
+        let lazilyCreatedBaseBehavior = UIDynamicItemBehavior()
+        lazilyCreatedBaseBehavior.allowsRotation = false
+        lazilyCreatedBaseBehavior.elasticity = Constants.BallElasticity
+        lazilyCreatedBaseBehavior.friction = 0
+        lazilyCreatedBaseBehavior.resistance = 0
+        return lazilyCreatedBaseBehavior
+    }()
+    
     private lazy var collider: UICollisionBehavior = {
         let lazilyCreatedCollider = UICollisionBehavior()
         lazilyCreatedCollider.action = {
@@ -28,14 +37,24 @@ class BreakoutBehavior: UIDynamicBehavior {
         return lazilyCreatedCollider
     }()
     
-    private lazy var baseBehavior: UIDynamicItemBehavior = {
-        let lazilyCreatedBaseBehavior = UIDynamicItemBehavior()
-        lazilyCreatedBaseBehavior.allowsRotation = false
-        lazilyCreatedBaseBehavior.elasticity = Constants.BallElasticity
-        lazilyCreatedBaseBehavior.friction = 0
-        lazilyCreatedBaseBehavior.resistance = 0
-        return lazilyCreatedBaseBehavior
-    }()
+    private var gravity = UIGravityBehavior()
+    
+    var gravityOn: Bool {
+        get { return gravity.items.count > 0 }
+        set {
+            let motionManager = AppDelegate.Motion.Manager
+            if !motionManager.accelerometerAvailable { return }
+            if newValue {
+                addChildBehavior(gravity)
+                motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue.mainQueue()) { (data, error) -> Void in
+                    self.gravity.gravityDirection = CGVector(dx: data.acceleration.x, dy: -data.acceleration.y)
+                }
+            } else {
+                removeChildBehavior(gravity)
+                motionManager.stopAccelerometerUpdates()
+            }
+        }
+    }
     
     var ball: UIView? {
         return collider.items.filter{ $0 is UIView }.map{ $0 as! UIView }.first
@@ -73,11 +92,13 @@ class BreakoutBehavior: UIDynamicBehavior {
         dynamicAnimator?.referenceView?.addSubview(ball)
         collider.addItem(ball)
         baseBehavior.addItem(ball)
+        gravity.addItem(ball)
     }
     
     private func removeBallBehavior() {
         if ball == nil { return }
         baseBehavior.removeItem(ball!)
+        gravity.removeItem(ball!)
         ball!.removeFromSuperview()
         // collider keep object 'ball' - so remove 'ball' from collider at the end
         collider.removeItem(ball!)
