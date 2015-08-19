@@ -34,10 +34,7 @@ class BrickBuilder {
     }
     
     func buildBricks() {
-        // Remove old brick views
-        for brick in bricks.values.array {
-            brick.view.removeFromSuperview()
-        }
+        clearBricks()
         
         switch currentGameLevel {
         case .GameLevel1:
@@ -54,6 +51,15 @@ class BrickBuilder {
         buildBricks()
     }
     
+    private func clearBricks() {
+        for pair in bricks {
+            if let brick = bricks.removeValueForKey(pair.0) {
+                breakoutBehavior.removeBarrier(pair.0)
+                brick.view.removeFromSuperview()
+            }
+        }
+    }
+    
     private func buildBricksLevel1() {
         for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
             bricks[index] = Brick(parentView: parentView, type: .Normal)
@@ -62,12 +68,17 @@ class BrickBuilder {
     
     private func buildBricksLevel2() {
         for index in 1...Constants.BrickRowsCount * Constants.BrickColumnsCount {
-            if index >= 1 && index <= Constants.BrickColumnsCount {
+            let isRow0 = index >= 1 && index <= Constants.BrickColumnsCount
+            let isRow1 = index >= 1 + Constants.BrickColumnsCount && index <= Constants.BrickColumnsCount * 2
+            let isRow2 = index >= 1 + Constants.BrickColumnsCount * 2 && index <= Constants.BrickColumnsCount * 3
+            
+            if isRow0 {
                 bricks[index] = Brick(parentView: parentView, type: .SolidBrick)
-            } else if index >= 1 + Constants.BrickColumnsCount && index <= Constants.BrickColumnsCount * 2 {
+            } else if isRow1 {
                 bricks[index] = Brick(parentView: parentView, type: .ShortPaddleForce)
-            }
-            else {
+            } else if isRow2 {
+                bricks[index] = Brick(parentView: parentView, type: .Normal)
+            } else {
                 bricks[index] = Brick(parentView: parentView, type: .Normal)
             }
         }

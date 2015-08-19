@@ -19,7 +19,7 @@ class BreakoutBehavior: UIDynamicBehavior {
         let lazilyCreatedCollider = UICollisionBehavior()
         lazilyCreatedCollider.action = {
             if self.ball != nil && !CGRectIntersectsRect(self.ball!.frame, self.dynamicAnimator!.referenceView!.bounds) {
-                self.removeBallBehavior(self.ball!)
+                self.removeBallBehavior()
                 if self.ballOutOfGameViewBoundsHandler != nil {
                     self.ballOutOfGameViewBoundsHandler!()
                 }
@@ -68,17 +68,19 @@ class BreakoutBehavior: UIDynamicBehavior {
     // MARK: - Complex behaviors
     // MARK: Ball
     func addBallBehavior(ball: UIView) {
-        removeBallBehavior(ball)
+        removeBallBehavior()
         
         dynamicAnimator?.referenceView?.addSubview(ball)
         collider.addItem(ball)
         baseBehavior.addItem(ball)
     }
     
-    private func removeBallBehavior(ball: UIView) {
-        collider.removeItem(ball)
-        baseBehavior.removeItem(ball)
-        ball.removeFromSuperview()
+    private func removeBallBehavior() {
+        if ball == nil { return }
+        baseBehavior.removeItem(ball!)
+        ball!.removeFromSuperview()
+        // collider keep object 'ball' - so remove 'ball' from collider at the end
+        collider.removeItem(ball!)
     }
     
     func pushBall() {

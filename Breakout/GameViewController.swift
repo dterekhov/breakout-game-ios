@@ -11,7 +11,7 @@ import UIKit
 class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlertViewDelegate {
     private struct Constants {
         static let PaddleHeight: CGFloat = 10
-        static let PaddleBottomIndent: CGFloat = 35
+        static let PaddleBottomIndent: CGFloat = 75
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
@@ -39,14 +39,14 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
                 self.resetBall()
             }
         }
+        
+        self.animator = UIDynamicAnimator(referenceView: self.gameView)
+        self.animator!.addBehavior(breakoutBehavior)
+        
         return breakoutBehavior
     }()
     
-    private lazy var animator: UIDynamicAnimator = {
-        let lazilyCreatedDynamicAnimator = UIDynamicAnimator(referenceView: self.gameView)
-        lazilyCreatedDynamicAnimator.addBehavior(self.breakoutBehavior)
-        return lazilyCreatedDynamicAnimator
-    }()
+    var animator: UIDynamicAnimator?
     
     private lazy var paddle: UIView = {
         let paddle = UIView()
@@ -74,7 +74,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         return brickBuilder
     }()
     
-    var livesCount = Constants.LivesCount {
+    var livesCount = 0 {
         didSet {
             // Refresh livesLabel
             var livesString = ""
@@ -112,9 +112,9 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        brickBuilder.buildBricks()
-        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
+        
+        newGame()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -136,20 +136,11 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     // MARK: - Ball
     private func resetBall() {
-        func placeBall(ball: UIView) {
-            ball.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - ballSize.width / 2, y: paddle.frame.origin.y - ballSize.height), size: ballSize)
-            ball.layer.cornerRadius = ballSize.width / 2
-            animator.updateItemUsingCurrentState(ball)
-        }
-        
-        if let ball = breakoutBehavior.ball {
-            placeBall(ball)
-        } else {
-            let ball = UIView()
-            placeBall(ball)
-            ball.backgroundColor = UIColor.lightGrayColor()
-            breakoutBehavior.addBallBehavior(ball)
-        }
+        let ball = UIView()
+        ball.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - ballSize.width / 2, y: paddle.frame.origin.y - ballSize.height), size: ballSize)
+        ball.layer.cornerRadius = ballSize.width / 2
+        ball.backgroundColor = UIColor.lightGrayColor()
+        breakoutBehavior.addBallBehavior(ball)
         
         isGameStarted = false
     }
@@ -303,7 +294,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     }
     
     private func showComboLabel() {
-        UIView.animateWithDuration(0.5, animations: { () -> Void in
+        UIView.animateWithDuration(1.0, animations: { () -> Void in
             self.comboLabel.alpha = 1.0
         }) { (finished) -> Void in
             UIView.animateWithDuration(0.2, animations: { () -> Void in
