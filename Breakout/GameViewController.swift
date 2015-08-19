@@ -17,6 +17,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let GameViewBoundaryIdentifier = "GameView"
         static let BallSpeed: CGFloat = 0.5
         static let LivesCount = 3
+        static let ParallaxOffset = 50
         
         static let PlayImage = UIImage(named: "ico_play")
         static let PauseImage = UIImage(named: "ico_pause")
@@ -28,6 +29,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     @IBOutlet weak var livesLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var comboLabel: UILabel!
+    @IBOutlet weak var backgroundImageView: UIImageView!
     
     private lazy var breakoutBehavior: BreakoutBehavior = {
         let breakoutBehavior = BreakoutBehavior()
@@ -112,6 +114,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        addParallaxEffect(backgroundImageView, offset: Constants.ParallaxOffset)
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
         
         newGame()
@@ -125,7 +129,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        breakoutBehavior.gravityOn = true
+//        breakoutBehavior.gravityOn = true
     }
     
     deinit {
@@ -307,5 +311,26 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
                 self.comboLabel.alpha = 0.0
             })
         }
+    }
+    
+    private func addParallaxEffect(backgroundView: UIView, offset: Int) {
+        // Set vertical effect
+        let verticalMotionEffect = UIInterpolatingMotionEffect(keyPath: "center.y",
+            type: .TiltAlongVerticalAxis)
+        verticalMotionEffect.minimumRelativeValue = -offset
+        verticalMotionEffect.maximumRelativeValue = offset
+        
+        // Set horizontal effect
+        let horizontalMotionEffect = UIInterpolatingMotionEffect(keyPath: "center.x",
+            type: .TiltAlongHorizontalAxis)
+        horizontalMotionEffect.minimumRelativeValue = -offset
+        horizontalMotionEffect.maximumRelativeValue = offset
+        
+        // Create group to combine both
+        let group = UIMotionEffectGroup()
+        group.motionEffects = [horizontalMotionEffect, verticalMotionEffect]
+        
+        // Add both effects to your view
+        backgroundView.addMotionEffect(group)
     }
 }

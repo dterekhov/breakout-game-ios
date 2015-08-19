@@ -16,17 +16,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_glare_background" translatesAutoresizingMaskIntoConstraints="NO" id="yYR-nR-c7U" userLabel="backgroundImageView">
+                                <rect key="frame" x="-50" y="-50" width="700" height="651"/>
+                            </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5j-HZ-Ve2" userLabel="gameView" customClass="BezierPathsView" customModule="Breakout" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Combo!" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uyU-kN-931" userLabel="comboLabel">
-                                        <rect key="frame" x="230" y="252" width="140.5" height="48"/>
+                                        <rect key="frame" x="230.5" y="252" width="140.5" height="48"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                         <color key="textColor" red="1" green="0.40000000596046448" blue="0.40000000596046448" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="centerX" secondItem="uyU-kN-931" secondAttribute="centerX" id="bqb-Bt-WRd"/>
@@ -52,15 +55,15 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BALLS: ⦁⦁⦁" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Obj-Qe-c8y" userLabel="livesLabel">
-                                <rect key="frame" x="8" y="522" width="107" height="20.5"/>
+                                <rect key="frame" x="8" y="522.5" width="107" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 POINTS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M0d-eZ-eWO" userLabel="scoreLabel">
-                                <rect key="frame" x="515" y="522" width="76.5" height="20.5"/>
+                                <rect key="frame" x="515.5" y="522.5" width="76.5" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -68,18 +71,23 @@
                         <constraints>
                             <constraint firstItem="Obj-Qe-c8y" firstAttribute="leading" secondItem="H5j-HZ-Ve2" secondAttribute="leading" constant="8" id="1If-YU-LRh"/>
                             <constraint firstAttribute="trailing" secondItem="H5j-HZ-Ve2" secondAttribute="trailing" id="KF4-g2-WCp"/>
+                            <constraint firstItem="H5j-HZ-Ve2" firstAttribute="top" secondItem="yYR-nR-c7U" secondAttribute="top" constant="50" id="L65-k3-IpU"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="LDs-1L-bvD"/>
                             <constraint firstItem="M0d-eZ-eWO" firstAttribute="bottom" secondItem="H5j-HZ-Ve2" secondAttribute="bottom" constant="-8" id="MKD-s2-V8l"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="S27-Y2-giR"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="bottom" secondItem="4ug-Mw-9AY" secondAttribute="top" id="UzW-Xl-Fut"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="trailing" secondItem="M0d-eZ-eWO" secondAttribute="trailing" constant="8" id="VKi-oF-icy"/>
+                            <constraint firstItem="yYR-nR-c7U" firstAttribute="trailing" secondItem="H5j-HZ-Ve2" secondAttribute="trailing" constant="50" id="YBB-AS-H4v"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="bottom" secondItem="Obj-Qe-c8y" secondAttribute="bottom" constant="8" id="ZCm-23-vak"/>
                             <constraint firstItem="Drd-x6-dVp" firstAttribute="trailing" secondItem="H5j-HZ-Ve2" secondAttribute="trailing" id="hIS-35-eGy"/>
                             <constraint firstItem="Drd-x6-dVp" firstAttribute="top" secondItem="H5j-HZ-Ve2" secondAttribute="top" constant="28" id="izC-A5-2mK"/>
+                            <constraint firstItem="yYR-nR-c7U" firstAttribute="bottom" secondItem="4ug-Mw-9AY" secondAttribute="top" constant="50" id="lHr-Db-hhN"/>
+                            <constraint firstItem="H5j-HZ-Ve2" firstAttribute="leading" secondItem="yYR-nR-c7U" secondAttribute="leading" constant="50" id="yES-Uo-efc"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Breakout" image="ico_breakout" id="acW-dT-cKf"/>
                     <connections>
+                        <outlet property="backgroundImageView" destination="yYR-nR-c7U" id="Hj1-Ob-zTv"/>
                         <outlet property="comboLabel" destination="uyU-kN-931" id="R1i-d1-Rgd"/>
                         <outlet property="gameView" destination="H5j-HZ-Ve2" id="vr0-6c-RRk"/>
                         <outlet property="livesLabel" destination="Obj-Qe-c8y" id="yvb-J2-nRi"/>
@@ -165,5 +173,6 @@
         <image name="ico_breakout" width="25" height="25"/>
         <image name="ico_pause" width="100" height="100"/>
         <image name="ico_settings" width="25" height="25"/>
+        <image name="img_glare_background" width="1600" height="2560"/>
     </resources>
 </document>
