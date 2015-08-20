@@ -19,8 +19,16 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let LivesCount = 3
         static let ParallaxOffset = 50
         
+        static let PaddleGradientColors = [
+            UIColor(red:0.74, green:0.74, blue:0.76, alpha:1).CGColor,
+            UIColor(red:0.9, green:0.9, blue:0.9, alpha:1).CGColor,
+            UIColor(red:0.34, green:0.34, blue:0.34, alpha:1).CGColor
+        ]
+        static let PaddleGradientStops = [0.0, 0.2, 0.6, 1.0]
+        
         static let PlayImage = UIImage(named: "ico_play")
         static let PauseImage = UIImage(named: "ico_pause")
+        static let BallImage = UIImage(named: "img_ball")
     }
     
     // MARK: - Members
@@ -52,8 +60,6 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private lazy var paddle: UIView = {
         let paddle = UIView()
-        paddle.layer.cornerRadius = Constants.PaddleCornerRadius
-        paddle.backgroundColor = UIColor.darkGrayColor()
         self.gameView.addSubview(paddle)
         return paddle
     }()
@@ -105,7 +111,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     var comboBrickCollisionsCount = 0 {
         didSet {
             if comboBrickCollisionsCount > 1 {
-                showComboLabel()
+                BreakoutUIHelper.fadeInOutAnimation(comboLabel)
             }
         }
     }
@@ -114,7 +120,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        addParallaxEffect(backgroundImageView, offset: Constants.ParallaxOffset)
+        BreakoutUIHelper.addParallaxEffect(backgroundImageView, offset: Constants.ParallaxOffset)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
         
@@ -146,10 +152,10 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     // MARK: - Ball
     private func resetBall() {
-        let ball = UIView()
+        let ball = UIImageView()
         ball.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - ballSize.width / 2, y: paddle.frame.origin.y - ballSize.height), size: ballSize)
         ball.layer.cornerRadius = ballSize.width / 2
-        ball.backgroundColor = UIColor.lightGrayColor()
+        ball.image = Constants.BallImage
         breakoutBehavior.addBallBehavior(ball)
         
         isGameStarted = false
@@ -158,12 +164,15 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     // MARK: - Paddle
     private func resetPaddle() {
         paddle.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - paddleSize.width / 2, y: gameView.bounds.height - paddleSize.height - Constants.PaddleBottomIndent), size: paddleSize)
+        
+        BreakoutUIHelper.addGradientColors(paddle, cornerRadius: Constants.PaddleCornerRadius, gradientColors: Constants.PaddleGradientColors, gradientStops: Constants.PaddleGradientStops)
+        
         refreshBarrierInPaddle()
     }
     
     private func placePaddle(#deltaOriginX: CGFloat) {
         let newPaddleOriginX = paddle.frame.origin.x + deltaOriginX
-        let maxPossiblePaddleOriginX = gameView.bounds.maxX - paddleSize.width
+        let maxPossiblePaddleOriginX = gameView.bounds.maxX - paddle.frame.width
         
         // Handle to keep paddle between left and right bounds of gameView
         paddle.frame.origin.x = max(min(newPaddleOriginX, maxPossiblePaddleOriginX), 0.0)
@@ -207,6 +216,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private func handleBrickShortPaddleForce() {
         paddle.frame.size.width -= paddle.frame.width / 4
+        BreakoutUIHelper.addGradientColors(paddle, cornerRadius: Constants.PaddleCornerRadius, gradientColors: Constants.PaddleGradientColors, gradientStops: Constants.PaddleGradientStops)
         refreshBarrierInPaddle()
     }
     
@@ -270,7 +280,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     }
     
     @IBAction private func gameViewSwipe(gesture: UIPanGestureRecognizer) {
-        if isGamePaused { return } // On pause can't move the paddle
+//        if isGamePaused { return } // On pause can't move the paddle
         if gesture.state == .Changed {
             placePaddle(deltaOriginX: gesture.translationInView(gameView).x)
             gesture.setTranslation(CGPointZero, inView: gameView)
@@ -301,36 +311,5 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         var rect = gameView.bounds;
         rect.size.height *= 2
         breakoutBehavior.addBarrier(UIBezierPath(rect: rect), named: Constants.GameViewBoundaryIdentifier)
-    }
-    
-    private func showComboLabel() {
-        UIView.animateWithDuration(1.0, animations: { () -> Void in
-            self.comboLabel.alpha = 1.0
-        }) { (finished) -> Void in
-            UIView.animateWithDuration(0.2, animations: { () -> Void in
-                self.comboLabel.alpha = 0.0
-            })
-        }
-    }
-    
-    private func addParallaxEffect(backgroundView: UIView, offset: Int) {
-        // Set vertical effect
-        let verticalMotionEffect = UIInterpolatingMotionEffect(keyPath: "center.y",
-            type: .TiltAlongVerticalAxis)
-        verticalMotionEffect.minimumRelativeValue = -offset
-        verticalMotionEffect.maximumRelativeValue = offset
-        
-        // Set horizontal effect
-        let horizontalMotionEffect = UIInterpolatingMotionEffect(keyPath: "center.x",
-            type: .TiltAlongHorizontalAxis)
-        horizontalMotionEffect.minimumRelativeValue = -offset
-        horizontalMotionEffect.maximumRelativeValue = offset
-        
-        // Create group to combine both
-        let group = UIMotionEffectGroup()
-        group.motionEffects = [horizontalMotionEffect, verticalMotionEffect]
-        
-        // Add both effects to your view
-        backgroundView.addMotionEffect(group)
     }
 }
