@@ -280,7 +280,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     }
     
     @IBAction private func gameViewSwipe(gesture: UIPanGestureRecognizer) {
-//        if isGamePaused { return } // On pause can't move the paddle
+        if isGamePaused { return } // On pause can't move the paddle
         if gesture.state == .Changed {
             placePaddle(deltaOriginX: gesture.translationInView(gameView).x)
             gesture.setTranslation(CGPointZero, inView: gameView)

@@ -17,7 +17,7 @@ class BreakoutBehavior: UIDynamicBehavior {
     // MARK: - Members
     private lazy var baseBehavior: UIDynamicItemBehavior = {
         let lazilyCreatedBaseBehavior = UIDynamicItemBehavior()
-        lazilyCreatedBaseBehavior.allowsRotation = false
+        lazilyCreatedBaseBehavior.allowsRotation = true
         lazilyCreatedBaseBehavior.elasticity = Constants.BallElasticity
         lazilyCreatedBaseBehavior.friction = 0
         lazilyCreatedBaseBehavior.resistance = 0
