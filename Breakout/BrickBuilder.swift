@@ -95,6 +95,7 @@ class BrickBuilder {
                 let index = (row - 1) * Constants.BrickColumnsCount + column
                 if let brick = bricks[index] {
                     brick.view.frame = CGRect(origin: origin, size: brickSize)
+                    brick.refreshGradientColor()
                     breakoutBehavior.addBarrier(UIBezierPath(rect: brick.view.frame), named: index)
                 }
                 origin.x += brickWidth + Constants.BrickInteritemSpacing

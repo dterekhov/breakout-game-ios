@@ -41,14 +41,18 @@ class BreakoutUIHelper {
     }
     
     static func addGradientColors(view: UIView, cornerRadius: CGFloat, gradientColors: [CGColor!], gradientStops: [Double]) {
+        func refreshGradientLayer(layer: CAGradientLayer) {
+            layer.cornerRadius = cornerRadius
+            layer.frame = view.bounds
+            layer.locations = gradientStops
+            layer.colors = gradientColors
+        }
+        
         if let gradientLayer = view.layer.sublayers?.first as? CAGradientLayer {
-            gradientLayer.frame = view.bounds
+            refreshGradientLayer(gradientLayer)
         } else {
             var gradientLayer = CAGradientLayer()
-            gradientLayer.cornerRadius = cornerRadius
-            gradientLayer.frame = view.bounds
-            gradientLayer.locations = gradientStops
-            gradientLayer.colors = gradientColors
+            refreshGradientLayer(gradientLayer)
             view.layer.insertSublayer(gradientLayer, atIndex: 0)
         }
     }
