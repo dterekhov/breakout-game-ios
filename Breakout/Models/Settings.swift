@@ -82,5 +82,6 @@ class Settings {
         difficultyHard = false
         scoreBest = 0
         scoreLast = 0
+        isPlayerWithLastScoreWin = false
     }
 }

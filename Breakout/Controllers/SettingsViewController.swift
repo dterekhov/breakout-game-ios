@@ -59,8 +59,12 @@ class SettingsViewController: UITableViewController {
     }
     
     private func refreshLastResultLabel() {
-        let winningStatus = String(format: " (%@)", Settings.isPlayerWithLastScoreWin ? "winning" : "losing")
-        lastResultLabel.text = "Last result" + winningStatus
+        let winningString = NSLocalizedString("Winning", comment: "")
+        let losingString = NSLocalizedString("Losing", comment: "")
+        let lastResultString = NSLocalizedString("LastResult", comment: "")
+        
+        let winningStatus = String(format: " (%@)", Settings.isPlayerWithLastScoreWin ? winningString : losingString)
+        lastResultLabel.text = lastResultString + winningStatus
     }
     
     // MARK: - User interaction

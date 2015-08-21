@@ -20,6 +20,7 @@
 		0916FDF71B87C74300FA1D44 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0916FDF11B87C74300FA1D44 /* Settings.swift */; };
 		0916FDF81B87C74300FA1D44 /* BreakoutUIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0916FDF31B87C74300FA1D44 /* BreakoutUIHelper.swift */; };
 		0916FDF91B87C74300FA1D44 /* BrickBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0916FDF41B87C74300FA1D44 /* BrickBuilder.swift */; };
+		0916FE011B87D7FD00FA1D44 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0916FDFF1B87D29600FA1D44 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,9 @@
 		0916FDF11B87C74300FA1D44 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		0916FDF31B87C74300FA1D44 /* BreakoutUIHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakoutUIHelper.swift; sourceTree = "<group>"; };
 		0916FDF41B87C74300FA1D44 /* BrickBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrickBuilder.swift; sourceTree = "<group>"; };
+		0916FDFA1B87C8B000FA1D44 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
+		0916FDFE1B87D29600FA1D44 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0916FE001B87D2A100FA1D44 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				0916FDE51B87C5FB00FA1D44 /* Images.xcassets */,
+				0916FDFF1B87D29600FA1D44 /* Localizable.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -236,6 +241,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 0910A2421B6D2FFB00730496;
 			productRefGroup = 0910A24C1B6D2FFB00730496 /* Products */;
@@ -253,6 +259,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0916FE011B87D7FD00FA1D44 /* Localizable.strings in Resources */,
 				0916FDE21B87C5A500FA1D44 /* LaunchScreen.xib in Resources */,
 				0916FDE61B87C5FB00FA1D44 /* Images.xcassets in Resources */,
 				0916FDE31B87C5A500FA1D44 /* Main.storyboard in Resources */,
@@ -316,8 +323,18 @@
 			isa = PBXVariantGroup;
 			children = (
 				0916FDE11B87C5A500FA1D44 /* Base */,
+				0916FDFA1B87C8B000FA1D44 /* ru */,
 			);
 			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		0916FDFF1B87D29600FA1D44 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0916FDFE1B87D29600FA1D44 /* Base */,
+				0916FE001B87D2A100FA1D44 /* ru */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -359,7 +376,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -398,7 +415,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

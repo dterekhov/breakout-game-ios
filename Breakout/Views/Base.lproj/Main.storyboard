@@ -5,7 +5,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Breakout-->
+        <!--Game-->
         <scene sceneID="hNz-n2-bh7">
             <objects>
                 <viewController id="9pv-A4-QxB" customClass="GameViewController" customModule="Breakout" customModuleProvider="target" sceneMemberID="viewController">
@@ -86,7 +86,7 @@
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="leading" secondItem="yYR-nR-c7U" secondAttribute="leading" constant="50" id="yES-Uo-efc"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Breakout" image="ico_breakout" id="acW-dT-cKf"/>
+                    <tabBarItem key="tabBarItem" title="Game" image="ico_breakout" id="acW-dT-cKf"/>
                     <connections>
                         <outlet property="backgroundImageView" destination="yYR-nR-c7U" id="Hj1-Ob-zTv"/>
                         <outlet property="comboLabel" destination="uyU-kN-931" id="R1i-d1-Rgd"/>
@@ -270,7 +270,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Ratings" id="3ES-XG-PLX">
+                            <tableViewSection headerTitle="Rating" id="3ES-XG-PLX">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="PMB-si-lFn">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>

@@ -1,0 +1,22 @@
+/* 
+  Localizable.strings
+  Breakout
+
+  Created by Dmitry Terekhov on 22.08.15.
+  Copyright (c) 2015 Stanford University. All rights reserved.
+*/
+
+"BallsCapital" = "МЯЧЕЙ";
+"PointsCapital" = "ОЧКОВ";
+"PlayerSetNewScoreRecord" = "Вы поставили новый РЕКОРД!";
+"Congratulations" = "Поздравления!";
+"PlayerCompleteLevel" = "Вы прошли уровень";
+"PlayerScore" = "Ваш счет";
+"Points" = "очков";
+"SavedLives" = "сохраненных жизней";
+"Ok" = "Ок";
+"PlayerLose" = "Вы проиграли";
+"TryAgain" = "Сыграть еще раз?";
+"Winning" = "победа";
+"Losing" = "поражение";
+"LastResult" = "Последний";

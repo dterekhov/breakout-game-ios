@@ -1,0 +1,78 @@
+
+/* Class = "UILabel"; text = "Lives, ball's speed, bonus points"; ObjectID = "2Js-gV-azx"; */
+"2Js-gV-azx.text" = "Жизни, скор-ть, бонусы";
+
+/* Class = "UITableViewSection"; headerTitle = "Ratings"; ObjectID = "3ES-XG-PLX"; */
+"3ES-XG-PLX.headerTitle" = "Рейтинг";
+
+/* Class = "UILabel"; text = "When collided with the obstacle"; ObjectID = "AiU-Wg-EfV"; */
+"AiU-Wg-EfV.text" = "Когда сталкивается с препятствием";
+
+/* Class = "UILabel"; text = "Defaults settings"; ObjectID = "BtZ-gY-A8c"; */
+"BtZ-gY-A8c.text" = "Настройки по умолчанию";
+
+/* Class = "UILabel"; text = "Last result"; ObjectID = "Gkz-mg-ckM"; */
+"Gkz-mg-ckM.text" = "Последний";
+
+/* Class = "UILabel"; text = "Start new game"; ObjectID = "Kln-ma-U9c"; */
+"Kln-ma-U9c.text" = "Начать новую игру";
+
+/* Class = "UILabel"; text = "0 POINTS"; ObjectID = "M0d-eZ-eWO"; */
+"M0d-eZ-eWO.text" = "0 ОЧКОВ";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "OLk-5w-Lnq"; */
+"OLk-5w-Lnq.text" = "0";
+
+/* Class = "UITableViewController"; title = "Settings"; ObjectID = "OMQ-Wm-TeF"; */
+"OMQ-Wm-TeF.title" = "Настройки";
+
+/* Class = "UILabel"; text = "BALLS: ⦁⦁⦁"; ObjectID = "Obj-Qe-c8y"; */
+"Obj-Qe-c8y.text" = "МЯЧИ: ⦁⦁⦁";
+
+/* Class = "UITableViewSection"; headerTitle = "Game"; ObjectID = "Ryo-Ju-bTI"; */
+"Ryo-Ju-bTI.headerTitle" = "Игра";
+
+/* Class = "UILabel"; text = "Best result"; ObjectID = "T54-XX-GX1"; */
+"T54-XX-GX1.text" = "Лучший";
+
+/* Class = "UILabel"; text = "Ball's gravity"; ObjectID = "U7x-QH-Xxe"; */
+"U7x-QH-Xxe.text" = "Гравитация мяча";
+
+/* Class = "UITabBarItem"; title = "Игра"; ObjectID = "acW-dT-cKf"; */
+"acW-dT-cKf.title" = "Игра";
+
+/* Class = "UILabel"; text = "Back to the first level"; ObjectID = "cU7-B3-hgM"; */
+"cU7-B3-hgM.text" = "Вернуться к первому уровню";
+
+/* Class = "UITabBarItem"; title = "Settings"; ObjectID = "eEn-bO-6aL"; */
+"eEn-bO-6aL.title" = "Настройки";
+
+/* Class = "UITableViewSection"; headerTitle = " "; ObjectID = "jCi-b6-A6E"; */
+"jCi-b6-A6E.headerTitle" = " ";
+
+/* Class = "UIButton"; normalTitle = "Start"; ObjectID = "kST-PG-YMg"; */
+"kST-PG-YMg.normalTitle" = "Начать";
+
+/* Class = "UISegmentedControl"; n8f-eR-aV7.segmentTitles[0] = "Easy"; ObjectID = "n8f-eR-aV7"; */
+"n8f-eR-aV7.segmentTitles[0]" = "Легкий";
+
+/* Class = "UISegmentedControl"; n8f-eR-aV7.segmentTitles[1] = "Hard"; ObjectID = "n8f-eR-aV7"; */
+"n8f-eR-aV7.segmentTitles[1]" = "Сложный";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "olJ-Xc-KIf"; */
+"olJ-Xc-KIf.text" = "0";
+
+/* Class = "UILabel"; text = "Depends on the device's accelerometer"; ObjectID = "sp5-ho-WDW"; */
+"sp5-ho-WDW.text" = "Зависит от акселерометра в устройстве";
+
+/* Class = "UILabel"; text = "Combo!"; ObjectID = "uyU-kN-931"; */
+"uyU-kN-931.text" = "Комбо!";
+
+/* Class = "UILabel"; text = "Difficulty"; ObjectID = "wiu-l5-Cda"; */
+"wiu-l5-Cda.text" = "Сложность";
+
+/* Class = "UIButton"; normalTitle = "Reset"; ObjectID = "xAX-yh-k5h"; */
+"xAX-yh-k5h.normalTitle" = "Сбросить";
+
+/* Class = "UILabel"; text = "Ball's rotation"; ObjectID = "xNy-hs-BO7"; */
+"xNy-hs-BO7.text" = "Вращение мяча";

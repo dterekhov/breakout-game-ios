@@ -35,6 +35,12 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let BallImage = UIImage(named: "img_ball")
     }
     
+    private struct Localized {
+        static let PlayerScoreString = NSLocalizedString("PlayerScore", comment: "")
+        static let PointsString = NSLocalizedString("Points", comment: "")
+        static let OkString = NSLocalizedString("Ok", comment: "")
+    }
+    
     enum GameLevel {
         case GameLevelFirst
         case GameLevelCurrent
@@ -101,7 +107,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
             while count(livesString) != livesCount {
                 livesString += "⦁"
             }
-            livesLabel.text = "BALLS: " + livesString
+            livesLabel.text = NSLocalizedString("BallsCapital", comment: "") + ": " + livesString
             
             // Player lose handler
             if isPlayerLose {
@@ -118,7 +124,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     var score = 0 {
         didSet {
-            scoreLabel.text = "\(score) POINTS"
+            scoreLabel.text = "\(score) " + NSLocalizedString("PointsCapital", comment: "")
         }
     }
     
@@ -264,14 +270,23 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private func completeLevelAlert() {
         breakoutBehavior.stopBall()
-        let playerSetNewScoreRecord = score > Settings.scoreBest && Settings.scoreBest > 0 && !isPlayerLose ? "\n+You set a new score RECORD!" : ""
-        let alertView = UIAlertView(title: "Congratulations!", message: "You complete a level\n\nYour score: \(score) points\n+\(livesCount) saved lives" + playerSetNewScoreRecord, delegate: self, cancelButtonTitle: "Ok")
+        
+        let playerSetNewScoreRecordString = score > Settings.scoreBest && Settings.scoreBest > 0 && !isPlayerLose ? "\n+" + NSLocalizedString("PlayerSetNewScoreRecord", comment: "") : ""
+        let congratulationsString = NSLocalizedString("Congratulations", comment: "")
+        let playerCompleteLevelString = NSLocalizedString("PlayerCompleteLevel", comment: "")
+        let savedLivesString = NSLocalizedString("SavedLives", comment: "")
+        
+        let alertView = UIAlertView(title: congratulationsString, message: playerCompleteLevelString + "\n\n" + Localized.PlayerScoreString + ": \(score) " + Localized.PointsString + "\n+\(livesCount) " + savedLivesString + playerSetNewScoreRecordString, delegate: self, cancelButtonTitle: Localized.OkString)
         alertView.show()
     }
     
     private func gameLoseAlert() {
         breakoutBehavior.stopBall()
-        let alertView = UIAlertView(title: "You lose", message: "Your score: \(score) points\n\nTry again?", delegate: self, cancelButtonTitle: "Ok")
+        
+        let playerLoseString = NSLocalizedString("PlayerLose", comment: "")
+        let tryAgainString = NSLocalizedString("TryAgain", comment: "")
+        
+        let alertView = UIAlertView(title: playerLoseString, message: Localized.PlayerScoreString + ": \(score) " + Localized.PointsString + "\n\n" + tryAgainString, delegate: self, cancelButtonTitle: Localized.OkString)
         alertView.show()
     }
     
