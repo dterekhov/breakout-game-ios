@@ -292,10 +292,12 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
             brickBuilder.buildBricksForNextLevel()
         }
         
-        // Save score
+        // Save last score
         if score > 0 {
+            Settings.isPlayerWithLastScoreWin = !isPlayerLose
             Settings.scoreLast = score
             
+            // Save best score
             if Settings.scoreLast > Settings.scoreBest && !isPlayerLose {
                 Settings.scoreBest = Settings.scoreLast
             }

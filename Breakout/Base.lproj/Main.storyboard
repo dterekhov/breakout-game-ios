@@ -374,6 +374,7 @@
                         <outlet property="ballGravitySwitch" destination="GYK-Ny-OPD" id="Gvl-l3-jOM"/>
                         <outlet property="ballRotationSwitch" destination="eh8-Ua-OZC" id="RRT-xv-jUE"/>
                         <outlet property="difficultySegmentedControl" destination="n8f-eR-aV7" id="Zjf-o7-Cjj"/>
+                        <outlet property="lastResultLabel" destination="Gkz-mg-ckM" id="zl1-PY-AoQ"/>
                         <outlet property="scoreBestLabel" destination="olJ-Xc-KIf" id="rwL-8f-4Ju"/>
                         <outlet property="scoreLastLabel" destination="OLk-5w-Lnq" id="A74-qi-RZn"/>
                     </connections>

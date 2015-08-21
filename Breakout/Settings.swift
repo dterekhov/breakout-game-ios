@@ -15,6 +15,7 @@ class Settings {
         static let DifficultyHard = "DifficultyHard"
         static let ScoreBest = "ScoreBest"
         static let ScoreLast = "ScoreLast"
+        static let IsPlayerWithLastScoreWin = "IsPlayerWithLastScoreWin"
     }
     
     static let BallRotationDidChangedNotification = "BallRotationDidChangedNotification"
@@ -22,6 +23,7 @@ class Settings {
     static let DifficultyHardDidChangedNotification = "DifficultyHardDidChangedNotification"
     static let ScoreBestDidChangedNotification = "ScoreBestDidChangedNotification"
     static let ScoreLastDidChangedNotification = "ScoreLastDidChangedNotification"
+    static let IsPlayerWithLastScoreWinDidChangedNotification = "IsPlayerWithLastScoreWinDidChangedNotification"
     
     private static let userDefaults = NSUserDefaults.standardUserDefaults()
     private static let notificationCenter = NSNotificationCenter.defaultCenter()
@@ -63,6 +65,14 @@ class Settings {
         set {
             userDefaults.setInteger(newValue, forKey: UDKeys.ScoreLast)
             notificationCenter.postNotificationName(ScoreLastDidChangedNotification, object: nil)
+        }
+    }
+    
+    static var isPlayerWithLastScoreWin: Bool {
+        get { return userDefaults.boolForKey(UDKeys.IsPlayerWithLastScoreWin) }
+        set {
+            userDefaults.setBool(newValue, forKey: UDKeys.IsPlayerWithLastScoreWin)
+            notificationCenter.postNotificationName(IsPlayerWithLastScoreWinDidChangedNotification, object: nil)
         }
     }
     

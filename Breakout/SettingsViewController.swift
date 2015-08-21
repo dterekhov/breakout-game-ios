@@ -15,6 +15,7 @@ class SettingsViewController: UITableViewController {
     @IBOutlet weak var difficultySegmentedControl: UISegmentedControl!
     @IBOutlet weak var scoreBestLabel: UILabel!
     @IBOutlet weak var scoreLastLabel: UILabel!
+    @IBOutlet weak var lastResultLabel: UILabel!
     
     private var gameViewController: GameViewController? {
         return self.tabBarController?.viewControllers?.first as? GameViewController
@@ -32,6 +33,7 @@ class SettingsViewController: UITableViewController {
         
         notificationCenter.addObserver(self, selector: "scoreBestDidChanged", name: Settings.ScoreBestDidChangedNotification, object: nil)
         notificationCenter.addObserver(self, selector: "scoreLastDidChanged", name: Settings.ScoreLastDidChangedNotification, object: nil)
+        notificationCenter.addObserver(self, selector: "isPlayerWithLastScoreWinDidChanged", name: Settings.IsPlayerWithLastScoreWinDidChangedNotification, object: nil)
     }
     
     deinit {
@@ -50,6 +52,15 @@ class SettingsViewController: UITableViewController {
     
     @objc private func scoreLastDidChanged() {
         scoreLastLabel.text = "\(Settings.scoreLast)"
+    }
+    
+    @objc private func isPlayerWithLastScoreWinDidChanged() {
+        refreshLastResultLabel()
+    }
+    
+    private func refreshLastResultLabel() {
+        let winningStatus = String(format: " (%@)", Settings.isPlayerWithLastScoreWin ? "winning" : "losing")
+        lastResultLabel.text = "Last result" + winningStatus
     }
     
     // MARK: - User interaction
@@ -80,5 +91,6 @@ class SettingsViewController: UITableViewController {
         difficultySegmentedControl.selectedSegmentIndex = Settings.difficultyHard ? 1 : 0
         scoreBestLabel.text = "\(Settings.scoreBest)"
         scoreLastLabel.text = "\(Settings.scoreLast)"
+        refreshLastResultLabel()
     }
 }
