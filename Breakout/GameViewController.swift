@@ -35,6 +35,12 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let BallImage = UIImage(named: "img_ball")
     }
     
+    enum GameLevel {
+        case GameLevelFirst
+        case GameLevelCurrent
+        case GameLevelNext
+    }
+    
     // MARK: - Members
     @IBOutlet private weak var gameView: BezierPathsView!
     @IBOutlet weak var pauseButton: UIButton!
@@ -276,11 +282,14 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         resetBall()
     }
     
-    private func newGame(nextLevel: Bool = false) {
-        if nextLevel {
-            brickBuilder.buildBricksForNextLevel()
-        } else {
+    func newGame(gameLevel: GameLevel = .GameLevelCurrent) {
+        switch gameLevel {
+        case .GameLevelFirst:
+            brickBuilder.buildBricksForFirstLevel()
+        case .GameLevelCurrent:
             brickBuilder.buildBricks()
+        case .GameLevelNext:
+            brickBuilder.buildBricksForNextLevel()
         }
         
         // Save score
@@ -300,7 +309,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     // MARK: - UIAlertViewDelegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        newGame(nextLevel: !isPlayerLose)
+        newGame(gameLevel: isPlayerLose ? .GameLevelCurrent : .GameLevelNext)
     }
     
     // MARK: - User interaction

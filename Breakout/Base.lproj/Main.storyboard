@@ -194,7 +194,7 @@
                                                         <segment title="Hard"/>
                                                     </segments>
                                                     <connections>
-                                                        <action selector="DifficultyValueChanged" destination="OMQ-Wm-TeF" eventType="valueChanged" id="TcE-Sb-xFs"/>
+                                                        <action selector="difficultyValueChanged" destination="OMQ-Wm-TeF" eventType="valueChanged" id="vyc-An-etP"/>
                                                     </connections>
                                                 </segmentedControl>
                                             </subviews>
@@ -212,19 +212,19 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sgk-ja-NHj" id="8Lh-7P-Mzo">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Simple bricks" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kln-ma-U9c">
-                                                    <rect key="frame" x="8" y="11" width="104" height="20.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start new game" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kln-ma-U9c">
+                                                    <rect key="frame" x="8" y="11" width="121" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kST-PG-YMg">
-                                                    <rect key="frame" x="562" y="7" width="30" height="30"/>
-                                                    <state key="normal" title="Ok">
+                                                    <rect key="frame" x="559" y="7" width="33" height="30"/>
+                                                    <state key="normal" title="Start">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
-                                                        <action selector="simpleBricksButtonTap" destination="OMQ-Wm-TeF" eventType="touchUpInside" id="pFC-Ul-Fgl"/>
+                                                        <action selector="startNewGameButtonTap" destination="OMQ-Wm-TeF" eventType="touchUpInside" id="r3o-oc-kTB"/>
                                                     </connections>
                                                 </button>
                                             </subviews>

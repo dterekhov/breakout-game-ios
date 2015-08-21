@@ -16,12 +16,9 @@ class SettingsViewController: UITableViewController {
     @IBOutlet weak var scoreBestLabel: UILabel!
     @IBOutlet weak var scoreLastLabel: UILabel!
     
-    private lazy var brickBuilder: BrickBuilder? = {
-        if let lazilyCreatedBrickBuilder = (self.tabBarController?.viewControllers?.first as? SettingsViewController)?.brickBuilder {
-            return lazilyCreatedBrickBuilder
-        }
-        return nil
-    }()
+    private var gameViewController: GameViewController? {
+        return self.tabBarController?.viewControllers?.first as? GameViewController
+    }
     
     private let notificationCenter = NSNotificationCenter.defaultCenter()
     
@@ -60,12 +57,12 @@ class SettingsViewController: UITableViewController {
         Settings.ballGravity = !Settings.ballGravity
     }
     
-    @IBAction func DifficultyValueChanged() {
+    @IBAction func difficultyValueChanged() {
         Settings.difficultyHard = !Settings.difficultyHard
     }
     
-    @IBAction func simpleBricksButtonTap() {
-        brickBuilder?.buildBricksForFirstLevel()
+    @IBAction func startNewGameButtonTap() {
+        gameViewController?.newGame(gameLevel: .GameLevelFirst)
     }
     
     @IBAction func resetSettingsButtonTap() {
