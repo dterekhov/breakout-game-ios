@@ -264,7 +264,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private func completeLevelAlert() {
         breakoutBehavior.stopBall()
-        let alertView = UIAlertView(title: "Congratulations!", message: "You complete a level\n\nYour score: \(score) points\n+\(livesCount) saved lives", delegate: self, cancelButtonTitle: "Ok")
+        let playerSetNewScoreRecord = score > Settings.scoreBest && Settings.scoreBest > 0 && !isPlayerLose ? "\n+You set a new score RECORD!" : ""
+        let alertView = UIAlertView(title: "Congratulations!", message: "You complete a level\n\nYour score: \(score) points\n+\(livesCount) saved lives" + playerSetNewScoreRecord, delegate: self, cancelButtonTitle: "Ok")
         alertView.show()
     }
     
