@@ -17,12 +17,26 @@ class BreakoutBehavior: UIDynamicBehavior {
     // MARK: - Members
     private lazy var baseBehavior: UIDynamicItemBehavior = {
         let lazilyCreatedBaseBehavior = UIDynamicItemBehavior()
-        lazilyCreatedBaseBehavior.allowsRotation = true
+        lazilyCreatedBaseBehavior.allowsRotation = false
         lazilyCreatedBaseBehavior.elasticity = Constants.BallElasticity
         lazilyCreatedBaseBehavior.friction = 0
         lazilyCreatedBaseBehavior.resistance = 0
+        lazilyCreatedBaseBehavior.angularResistance = 0
         return lazilyCreatedBaseBehavior
     }()
+    
+    var allowBallRotation: Bool {
+        get { return baseBehavior.allowsRotation }
+        set {
+            baseBehavior.allowsRotation = newValue
+            
+            // Stop current ball's rotation
+            if ball != nil && !newValue {
+                let angularVelocity = baseBehavior.angularVelocityForItem(ball!)
+                baseBehavior.addAngularVelocity(-angularVelocity, forItem: ball!)
+            }
+        }
+    }
     
     private lazy var collider: UICollisionBehavior = {
         let lazilyCreatedCollider = UICollisionBehavior()
@@ -39,7 +53,7 @@ class BreakoutBehavior: UIDynamicBehavior {
     
     private var gravity = UIGravityBehavior()
     
-    var gravityOn: Bool {
+    var allowBallGravity: Bool {
         get { return gravity.items.count > 0 }
         set {
             let motionManager = AppDelegate.Motion.Manager

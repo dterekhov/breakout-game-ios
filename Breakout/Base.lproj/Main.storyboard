@@ -133,8 +133,11 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eh8-Ua-OZC">
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="eh8-Ua-OZC">
                                                     <rect key="frame" x="543" y="6" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="ballRotationValueChanged" destination="OMQ-Wm-TeF" eventType="valueChanged" id="50L-gt-BBg"/>
+                                                    </connections>
                                                 </switch>
                                             </subviews>
                                             <constraints>
@@ -159,6 +162,9 @@
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="GYK-Ny-OPD">
                                                     <rect key="frame" x="543" y="6" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="ballGravityValueChanged" destination="OMQ-Wm-TeF" eventType="valueChanged" id="fxL-Lx-hlr"/>
+                                                    </connections>
                                                 </switch>
                                             </subviews>
                                             <constraints>
@@ -187,6 +193,9 @@
                                                         <segment title="Easy"/>
                                                         <segment title="Hard"/>
                                                     </segments>
+                                                    <connections>
+                                                        <action selector="DifficultyValueChanged" destination="OMQ-Wm-TeF" eventType="valueChanged" id="TcE-Sb-xFs"/>
+                                                    </connections>
                                                 </segmentedControl>
                                             </subviews>
                                             <constraints>
@@ -214,6 +223,9 @@
                                                     <state key="normal" title="Ok">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
+                                                    <connections>
+                                                        <action selector="simpleBricksButtonTap" destination="OMQ-Wm-TeF" eventType="touchUpInside" id="pFC-Ul-Fgl"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
@@ -304,6 +316,9 @@
                                                         <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
+                                                    <connections>
+                                                        <action selector="resetSettingsButtonTap" destination="OMQ-Wm-TeF" eventType="touchUpInside" id="7Pb-Bd-04Q"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
@@ -323,6 +338,13 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="euL-SN-Ar5"/>
+                    <connections>
+                        <outlet property="ballGravitySwitch" destination="GYK-Ny-OPD" id="Gvl-l3-jOM"/>
+                        <outlet property="ballRotationSwitch" destination="eh8-Ua-OZC" id="RRT-xv-jUE"/>
+                        <outlet property="difficultySegmentedControl" destination="n8f-eR-aV7" id="Zjf-o7-Cjj"/>
+                        <outlet property="scoreBestLabel" destination="olJ-Xc-KIf" id="rwL-8f-4Ju"/>
+                        <outlet property="scoreLastLabel" destination="OLk-5w-Lnq" id="A74-qi-RZn"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y3P-ot-v7G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -15,8 +15,10 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
-        static let BallSpeed: CGFloat = 0.5
-        static let LivesCount = 3
+        static let BallSpeedDifficultyEasy: CGFloat = 0.3
+        static let BallSpeedDifficultyHard: CGFloat = 0.5
+        static let LivesDifficultyEasyCount = 5
+        static let LivesDifficultyHardCount = 3
         static let ParallaxOffset = 50
         
         static let PaddleGradientColors = [
@@ -40,10 +42,11 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     @IBOutlet weak var backgroundImageView: UIImageView!
     
     private lazy var breakoutBehavior: BreakoutBehavior = {
-        let breakoutBehavior = BreakoutBehavior()
-        breakoutBehavior.ballSpeed = Constants.BallSpeed
-        breakoutBehavior.collisionDelegate = self
-        breakoutBehavior.ballOutOfGameViewBoundsHandler = {
+        let lazilyCreatedBreakoutBehavior = BreakoutBehavior()
+        lazilyCreatedBreakoutBehavior.ballSpeed = Settings.difficultyHard ? Constants.BallSpeedDifficultyHard : Constants.BallSpeedDifficultyEasy
+        lazilyCreatedBreakoutBehavior.allowBallRotation = Settings.ballRotation
+        lazilyCreatedBreakoutBehavior.collisionDelegate = self
+        lazilyCreatedBreakoutBehavior.ballOutOfGameViewBoundsHandler = {
             self.livesCount--
             if self.livesCount > 0 {
                 self.resetBall()
@@ -51,17 +54,17 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         }
         
         self.animator = UIDynamicAnimator(referenceView: self.gameView)
-        self.animator!.addBehavior(breakoutBehavior)
+        self.animator!.addBehavior(lazilyCreatedBreakoutBehavior)
         
-        return breakoutBehavior
+        return lazilyCreatedBreakoutBehavior
     }()
     
     var animator: UIDynamicAnimator?
     
     private lazy var paddle: UIView = {
-        let paddle = UIView()
-        self.gameView.addSubview(paddle)
-        return paddle
+        let lazilyCreatedPaddle = UIView()
+        self.gameView.addSubview(lazilyCreatedPaddle)
+        return lazilyCreatedPaddle
     }()
     
     // Game started when ball pushing
@@ -74,12 +77,12 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     }
     
     private lazy var brickBuilder: BrickBuilder = {
-        var brickBuilder = BrickBuilder(parentView: self.gameView, breakoutBehavior: self.breakoutBehavior)
-        brickBuilder.allBricksDestroyedHandler = {
+        var lazilyCreatedBrickBuilder = BrickBuilder(parentView: self.gameView, breakoutBehavior: self.breakoutBehavior)
+        lazilyCreatedBrickBuilder.allBricksDestroyedHandler = {
             self.score += self.livesCount // Score for saved lives
             self.completeLevelAlert()
         }
-        return brickBuilder
+        return lazilyCreatedBrickBuilder
     }()
     
     var livesCount = 0 {
@@ -97,6 +100,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
             }
         }
     }
+    
+    var fullLivesCount = Settings.difficultyHard ? Constants.LivesDifficultyHardCount : Constants.LivesDifficultyEasyCount
     
     var isPlayerLose: Bool {
         return livesCount == 0
@@ -116,30 +121,34 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         }
     }
     
+    private let notificationCenter = NSNotificationCenter.defaultCenter()
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        tabBarController?.viewControllers?.first as? SettingsViewController
         BreakoutUIHelper.addParallaxEffect(backgroundImageView, offset: Constants.ParallaxOffset)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
+        notificationCenter.addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
+        notificationCenter.addObserver(self, selector: "ballRotationDidChanged", name: Settings.BallRotationDidChangedNotification, object: nil)
+        notificationCenter.addObserver(self, selector: "difficultyHardDidChanged", name: Settings.DifficultyHardDidChangedNotification, object: nil)
         
         newGame()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        breakoutBehavior.gravityOn = false
+        breakoutBehavior.allowBallGravity = false
         pauseGame()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-//        breakoutBehavior.gravityOn = true
+        breakoutBehavior.allowBallGravity = Settings.ballGravity
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIApplicationWillResignActiveNotification, object: nil)
+        notificationCenter.removeObserver(self)
     }
     
     override func viewDidLayoutSubviews() {
@@ -148,6 +157,18 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         if !isGameStarted && livesCount > 0 {
             resetGameObjects()
         }
+    }
+    
+    // MARK: - Notification handlers
+    @objc private func ballRotationDidChanged() {
+        breakoutBehavior.allowBallRotation = Settings.ballRotation
+    }
+    
+    @objc private func difficultyHardDidChanged() {
+        fullLivesCount = Settings.difficultyHard ? Constants.LivesDifficultyHardCount : Constants.LivesDifficultyEasyCount
+        breakoutBehavior.ballSpeed = Settings.difficultyHard ? Constants.BallSpeedDifficultyHard : Constants.BallSpeedDifficultyEasy
+        newGame()
+        continueGame() // Change state pauseButton: Play -> Pause
     }
     
     // MARK: - Ball
@@ -252,20 +273,31 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         resetBall()
     }
     
-    private func newGame() {
-        if isPlayerLose {
-            brickBuilder.buildBricks()
-        } else {
+    private func newGame(nextLevel: Bool = false) {
+        if nextLevel {
             brickBuilder.buildBricksForNextLevel()
+        } else {
+            brickBuilder.buildBricks()
         }
-        livesCount = Constants.LivesCount
+        
+        // Save score
+        if score > 0 {
+            Settings.scoreLast = score
+            
+            if Settings.scoreLast > Settings.scoreBest && !isPlayerLose {
+                Settings.scoreBest = Settings.scoreLast
+            }
+        }
+        
+        // Reset
         score = 0
+        livesCount = fullLivesCount
         resetGameObjects()
     }
     
     // MARK: - UIAlertViewDelegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        newGame()
+        newGame(nextLevel: !isPlayerLose)
     }
     
     // MARK: - User interaction

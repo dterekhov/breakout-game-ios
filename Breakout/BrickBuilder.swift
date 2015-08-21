@@ -51,6 +51,11 @@ class BrickBuilder {
         buildBricks()
     }
     
+    func buildBricksForFirstLevel() {
+        currentGameLevel = .GameLevel1
+        buildBricks()
+    }
+    
     private func clearBricks() {
         for pair in bricks {
             if let brick = bricks.removeValueForKey(pair.0) {
