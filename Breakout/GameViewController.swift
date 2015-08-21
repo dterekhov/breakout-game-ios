@@ -46,7 +46,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         lazilyCreatedBreakoutBehavior.ballSpeed = Settings.difficultyHard ? Constants.BallSpeedDifficultyHard : Constants.BallSpeedDifficultyEasy
         lazilyCreatedBreakoutBehavior.allowBallRotation = Settings.ballRotation
         lazilyCreatedBreakoutBehavior.collisionDelegate = self
-        lazilyCreatedBreakoutBehavior.ballOutOfGameViewBoundsHandler = {
+        lazilyCreatedBreakoutBehavior.ballOutOfGameViewBoundsHandler = { [weak lazilyCreatedBreakoutBehavior] in
+            lazilyCreatedBreakoutBehavior!.allowBallGravity = false
             self.livesCount--
             if self.livesCount > 0 {
                 self.resetBall()
@@ -126,6 +127,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         tabBarController?.viewControllers?.first as? SettingsViewController
         BreakoutUIHelper.addParallaxEffect(backgroundImageView, offset: Constants.ParallaxOffset)
         
@@ -138,13 +140,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        breakoutBehavior.allowBallGravity = false
+        
         pauseGame()
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        breakoutBehavior.allowBallGravity = Settings.ballGravity
     }
     
     deinit {
@@ -250,6 +247,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     }
     
     private func continueGame() {
+        breakoutBehavior.allowBallGravity = Settings.ballGravity
         breakoutBehavior.continueBall()
         pauseButton.setImage(Constants.PauseImage, forState: UIControlState.Normal)
     }
@@ -307,6 +305,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
             continueGame()
         } else {
             breakoutBehavior.pushBall()
+            breakoutBehavior.allowBallGravity = Settings.ballGravity
             isGameStarted = true
         }
     }

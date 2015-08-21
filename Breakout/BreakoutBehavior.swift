@@ -53,20 +53,23 @@ class BreakoutBehavior: UIDynamicBehavior {
     
     private var gravity = UIGravityBehavior()
     
-    var allowBallGravity: Bool {
-        get { return gravity.items.count > 0 }
-        set {
-            let motionManager = AppDelegate.Motion.Manager
-            if !motionManager.accelerometerAvailable { return }
-            if newValue {
-                addChildBehavior(gravity)
-                motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue.mainQueue()) { (data, error) -> Void in
-                    self.gravity.gravityDirection = CGVector(dx: data.acceleration.x, dy: -data.acceleration.y)
-                }
-            } else {
-                removeChildBehavior(gravity)
-                motionManager.stopAccelerometerUpdates()
+    var allowBallGravity: Bool = false {
+        didSet {
+            ballGravityChangeAvailability(allowBallGravity)
+        }
+    }
+    
+    private func ballGravityChangeAvailability(enable: Bool) {
+        let motionManager = AppDelegate.Motion.Manager
+        if !motionManager.accelerometerAvailable { return }
+        if enable {
+            addChildBehavior(gravity)
+            motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue.mainQueue()) { (data, error) -> Void in
+                self.gravity.gravityDirection = CGVector(dx: data.acceleration.x, dy: -data.acceleration.y)
             }
+        } else {
+            removeChildBehavior(gravity)
+            motionManager.stopAccelerometerUpdates()
         }
     }
     
@@ -138,12 +141,14 @@ class BreakoutBehavior: UIDynamicBehavior {
     
     func stopBall() {
         if ball == nil { return }
+        ballGravityChangeAvailability(false)
         pauseLinearVelocity = ballLinearVelocity
         baseBehavior.addLinearVelocity(CGPoint(x: -ballLinearVelocity.x, y: -ballLinearVelocity.y), forItem: ball!)
     }
     
     func continueBall() {
         if ball == nil { return }
+        ballGravityChangeAvailability(allowBallGravity)
         baseBehavior.addLinearVelocity(pauseLinearVelocity, forItem: ball!)
         pauseLinearVelocity = CGPointZero
     }
