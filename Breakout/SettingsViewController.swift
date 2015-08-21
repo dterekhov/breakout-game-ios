@@ -26,6 +26,10 @@ class SettingsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if !AppDelegate.Motion.Manager.accelerometerAvailable {
+            ballGravitySwitch.enabled = false
+        }
+        
         notificationCenter.addObserver(self, selector: "scoreBestDidChanged", name: Settings.ScoreBestDidChangedNotification, object: nil)
         notificationCenter.addObserver(self, selector: "scoreLastDidChanged", name: Settings.ScoreLastDidChangedNotification, object: nil)
     }
