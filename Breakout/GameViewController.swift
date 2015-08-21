@@ -20,6 +20,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let LivesDifficultyEasyCount = 5
         static let LivesDifficultyHardCount = 3
         static let ParallaxOffset = 50
+        static let ComboBrickCollisionBonusPointsDifficultyEasy = 1
+        static let ComboBrickCollisionBonusPointsDifficultyHard = 2
         
         static let PaddleGradientColors = [
             UIColor(red:0.74, green:0.74, blue:0.76, alpha:1).CGColor,
@@ -122,6 +124,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         }
     }
     
+    var comboBrickCollisionBonusPoints = Settings.difficultyHard ? Constants.ComboBrickCollisionBonusPointsDifficultyHard : Constants.ComboBrickCollisionBonusPointsDifficultyEasy
+    
     private let notificationCenter = NSNotificationCenter.defaultCenter()
     
     // MARK: - Lifecycle
@@ -164,8 +168,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     @objc private func difficultyHardDidChanged() {
         fullLivesCount = Settings.difficultyHard ? Constants.LivesDifficultyHardCount : Constants.LivesDifficultyEasyCount
         breakoutBehavior.ballSpeed = Settings.difficultyHard ? Constants.BallSpeedDifficultyHard : Constants.BallSpeedDifficultyEasy
+        comboBrickCollisionBonusPoints = Settings.difficultyHard ? Constants.ComboBrickCollisionBonusPointsDifficultyHard : Constants.ComboBrickCollisionBonusPointsDifficultyEasy
         newGame()
-        continueGame() // Change state pauseButton: Play -> Pause
     }
     
     // MARK: - Ball
@@ -204,7 +208,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     // MARK: - UICollisionBehaviorDelegate, collision handlers
     func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
         if let brickIndex = identifier as? Int {
-            comboBrickCollisionsCount++ // Several collisions in sequence
+            comboBrickCollisionsCount += comboBrickCollisionBonusPoints // Several collisions in sequence
             handleBrickCollisionActionAtIndex(brickIndex)
         } else if identifier as? String == Constants.PaddleBoundaryIdentifier {
             comboBrickCollisionsCount = 0
@@ -265,6 +269,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     }
     
     private func resetGameObjects() {
+        pauseButton.setImage(Constants.PauseImage, forState: UIControlState.Normal)
         addGameViewBarriers()
         brickBuilder.placeBricks()
         resetPaddle()
