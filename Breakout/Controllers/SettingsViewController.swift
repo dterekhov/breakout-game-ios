@@ -24,6 +24,9 @@ class SettingsViewController: UITableViewController, UIActionSheetDelegate {
     @IBOutlet weak var lastResultLabel: UILabel!
     
     private var gameViewController: GameViewController? {
+        if BreakoutUIHelper.isIPad {
+            return (presentingViewController as? UITabBarController)?.viewControllers?.first as? GameViewController
+        }
         return self.tabBarController?.viewControllers?.first as? GameViewController
     }
     
@@ -32,6 +35,12 @@ class SettingsViewController: UITableViewController, UIActionSheetDelegate {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if BreakoutUIHelper.isIPad {
+            view.backgroundColor = UIColor.clearColor()
+            tableView.backgroundColor = UIColor.clearColor()
+            tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        }
         
         if !AppDelegate.Motion.Manager.accelerometerAvailable {
             ballGravitySwitch.enabled = false
@@ -116,7 +125,11 @@ class SettingsViewController: UITableViewController, UIActionSheetDelegate {
     func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
         if actionSheet.tag == Constants.ActionSheetTagStartNewGame && buttonIndex == 1 {
             gameViewController?.newGame(gameLevel: .GameLevelFirst)
-            self.tabBarController?.selectedIndex = 0
+            if BreakoutUIHelper.isIPad {
+                dismissViewControllerAnimated(true, completion: nil)
+            } else {
+                self.tabBarController?.selectedIndex = 0
+            }
         } else if actionSheet.tag == Constants.ActionSheetTagResetSettings && buttonIndex == 0 {
             Settings.resetToDefaults()
             refreshUI()

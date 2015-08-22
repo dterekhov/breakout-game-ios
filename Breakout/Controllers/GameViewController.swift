@@ -51,6 +51,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     // MARK: - Members
     @IBOutlet private weak var gameView: BezierPathsView!
+    @IBOutlet weak var settingsButton: UIButton!
     @IBOutlet weak var pauseButton: UIButton!
     @IBOutlet weak var livesLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -145,7 +146,12 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tabBarController?.viewControllers?.first as? SettingsViewController
+        if BreakoutUIHelper.isIPad {
+            tabBarController?.tabBar.hidden = true
+        } else {
+            settingsButton.hidden = true
+        }
+        
         BreakoutUIHelper.addParallaxEffect(backgroundImageView, offset: Constants.ParallaxOffset)
         
         notificationCenter.addObserver(self, selector: "pauseGame", name: UIApplicationWillResignActiveNotification, object: nil)
@@ -201,7 +207,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         let speedCoefficient = gameView.bounds.height / Constants.GameView4InchScreenHeight
         breakoutBehavior.ballSpeed = ballSpeed * speedCoefficient
     }
-        
+    
     // MARK: - Paddle
     private func resetPaddle() {
         paddle.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - paddleSize.width / 2, y: gameView.bounds.height - paddleSize.height - Constants.PaddleBottomIndent), size: paddleSize)
@@ -366,6 +372,10 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         }
     }
     
+    @IBAction func settingsButtonTap() {
+        pauseGame()
+    }
+
     // MARK: - Helpers
     private var paddleSize: CGSize {
         let width = gameView.bounds.size.width / 5

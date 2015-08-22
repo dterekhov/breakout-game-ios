@@ -41,6 +41,23 @@
                                     <outletCollection property="gestureRecognizers" destination="N9J-Zt-0qh" appends="YES" id="yD5-ey-CWV"/>
                                 </connections>
                             </view>
+                            <button opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jvb-Fl-EQt" userLabel="settingsButton">
+                                <rect key="frame" x="0.0" y="28" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="AFw-TN-JZx"/>
+                                    <constraint firstAttribute="height" constant="44" id="p6U-f2-FBq"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="4" minY="4" maxX="4" maxY="4"/>
+                                <state key="normal" image="ico_settings">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="settingsButtonTap" destination="9pv-A4-QxB" eventType="touchUpInside" id="Fc8-JU-zJn"/>
+                                    <segue destination="OMQ-Wm-TeF" kind="popoverPresentation" popoverAnchorView="jvb-Fl-EQt" id="Hn8-4u-RZI">
+                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                    </segue>
+                                </connections>
+                            </button>
                             <button opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Drd-x6-dVp" userLabel="pauseButton">
                                 <rect key="frame" x="556" y="28" width="44" height="44"/>
                                 <constraints>
@@ -71,6 +88,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Obj-Qe-c8y" firstAttribute="leading" secondItem="H5j-HZ-Ve2" secondAttribute="leading" constant="8" id="1If-YU-LRh"/>
+                            <constraint firstItem="jvb-Fl-EQt" firstAttribute="top" secondItem="H5j-HZ-Ve2" secondAttribute="top" constant="28" id="Agx-6S-DDq"/>
                             <constraint firstAttribute="trailing" secondItem="H5j-HZ-Ve2" secondAttribute="trailing" id="KF4-g2-WCp"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="top" secondItem="yYR-nR-c7U" secondAttribute="top" constant="50" id="L65-k3-IpU"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="LDs-1L-bvD"/>
@@ -83,10 +101,11 @@
                             <constraint firstItem="Drd-x6-dVp" firstAttribute="trailing" secondItem="H5j-HZ-Ve2" secondAttribute="trailing" id="hIS-35-eGy"/>
                             <constraint firstItem="Drd-x6-dVp" firstAttribute="top" secondItem="H5j-HZ-Ve2" secondAttribute="top" constant="28" id="izC-A5-2mK"/>
                             <constraint firstItem="yYR-nR-c7U" firstAttribute="bottom" secondItem="4ug-Mw-9AY" secondAttribute="top" constant="50" id="lHr-Db-hhN"/>
+                            <constraint firstItem="H5j-HZ-Ve2" firstAttribute="leading" secondItem="jvb-Fl-EQt" secondAttribute="leading" id="tpT-a5-Vw0"/>
                             <constraint firstItem="H5j-HZ-Ve2" firstAttribute="leading" secondItem="yYR-nR-c7U" secondAttribute="leading" constant="50" id="yES-Uo-efc"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Game" image="ico_breakout" id="acW-dT-cKf"/>
+                    <tabBarItem key="tabBarItem" title="Game" image="ico_breakout_tabbar" id="acW-dT-cKf"/>
                     <connections>
                         <outlet property="backgroundImageView" destination="yYR-nR-c7U" id="Hj1-Ob-zTv"/>
                         <outlet property="comboLabel" destination="uyU-kN-931" id="R1i-d1-Rgd"/>
@@ -94,6 +113,7 @@
                         <outlet property="livesLabel" destination="Obj-Qe-c8y" id="yvb-J2-nRi"/>
                         <outlet property="pauseButton" destination="Drd-x6-dVp" id="4Ek-CD-6XQ"/>
                         <outlet property="scoreLabel" destination="M0d-eZ-eWO" id="axg-CA-1UY"/>
+                        <outlet property="settingsButton" destination="jvb-Fl-EQt" id="Q9M-K1-1A1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
@@ -370,6 +390,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="euL-SN-Ar5"/>
+                    <value key="contentSizeForViewInPopover" type="size" width="320" height="524"/>
                     <connections>
                         <outlet property="ballGravitySwitch" destination="GYK-Ny-OPD" id="Gvl-l3-jOM"/>
                         <outlet property="ballRotationSwitch" destination="eh8-Ua-OZC" id="RRT-xv-jUE"/>
@@ -386,7 +407,6 @@
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
                 <tabBarController id="49e-Tb-3d3" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="W28-zg-YXA">
@@ -399,6 +419,7 @@
                         <segue destination="5Rb-vw-zsE" kind="relationship" relationship="viewControllers" id="kO2-iM-4Ep"/>
                     </connections>
                 </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="0.0" y="0.0"/>
         </scene>
@@ -406,7 +427,7 @@
         <scene sceneID="Az5-hM-eQM">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5Rb-vw-zsE" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Settings" image="ico_settings" id="eEn-bO-6aL"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="ico_settings_tabbar" id="eEn-bO-6aL"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="c6l-Ha-363">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -423,9 +444,13 @@
         </scene>
     </scenes>
     <resources>
-        <image name="ico_breakout" width="25" height="25"/>
+        <image name="ico_breakout_tabbar" width="25" height="25"/>
         <image name="ico_pause" width="100" height="100"/>
-        <image name="ico_settings" width="25" height="25"/>
+        <image name="ico_settings" width="100" height="100"/>
+        <image name="ico_settings_tabbar" width="25" height="25"/>
         <image name="img_glare_background" width="1600" height="2560"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="Hn8-4u-RZI"/>
+    </inferredMetricsTieBreakers>
 </document>

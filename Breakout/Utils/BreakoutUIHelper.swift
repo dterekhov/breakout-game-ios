@@ -9,6 +9,10 @@
 import UIKit
 
 class BreakoutUIHelper {
+    static var isIPad: Bool {
+        return UIDevice.currentDevice().userInterfaceIdiom == .Pad
+    }
+    
     static func fadeInOutAnimation(view: UIView) {
         UIView.animateWithDuration(1.0, animations: { () -> Void in
             view.alpha = 1.0
