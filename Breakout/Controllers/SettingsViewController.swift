@@ -8,7 +8,13 @@
 
 import UIKit
 
-class SettingsViewController: UITableViewController {
+class SettingsViewController: UITableViewController, UIActionSheetDelegate {
+    private struct Constants {
+        static let ActionSheetTagStartNewGame = 1
+        static let ActionSheetTagResetSettings = 2
+        static let CancelString = NSLocalizedString("Cancel", comment: "")
+    }
+    
     // MARK: - Members
     @IBOutlet weak var ballRotationSwitch: UISwitch!
     @IBOutlet weak var ballGravitySwitch: UISwitch!
@@ -81,14 +87,22 @@ class SettingsViewController: UITableViewController {
     }
     
     @IBAction func startNewGameButtonTap() {
-        gameViewController?.newGame(gameLevel: .GameLevelFirst)
+        let startNewGameString = NSLocalizedString("StartNewGame", comment: "")
+        let startString = NSLocalizedString("Start", comment: "")
+        let actionSheet = UIActionSheet(title: startNewGameString, delegate: self, cancelButtonTitle: Constants.CancelString, destructiveButtonTitle: nil, otherButtonTitles: startString)
+        actionSheet.tag = Constants.ActionSheetTagStartNewGame
+        actionSheet.showInView(view)
     }
     
     @IBAction func resetSettingsButtonTap() {
-        Settings.resetToDefaults()
-        refreshUI()
+        let resetSettingsString = NSLocalizedString("ResetSettings", comment: "")
+        let resetString = NSLocalizedString("Reset", comment: "")
+        let actionSheet = UIActionSheet(title: resetSettingsString, delegate: self, cancelButtonTitle: Constants.CancelString, destructiveButtonTitle: resetString)
+        actionSheet.tag = Constants.ActionSheetTagResetSettings
+        actionSheet.showInView(view)
     }
     
+    // MARK: - Helpers
     private func refreshUI() {
         ballRotationSwitch.on = Settings.ballRotation
         ballGravitySwitch.on = Settings.ballGravity
@@ -96,5 +110,16 @@ class SettingsViewController: UITableViewController {
         scoreBestLabel.text = "\(Settings.scoreBest)"
         scoreLastLabel.text = "\(Settings.scoreLast)"
         refreshLastResultLabel()
+    }
+    
+    // MARK: - UIActionSheetDelegate
+    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
+        if actionSheet.tag == Constants.ActionSheetTagStartNewGame && buttonIndex == 1 {
+            gameViewController?.newGame(gameLevel: .GameLevelFirst)
+            self.tabBarController?.selectedIndex = 0
+        } else if actionSheet.tag == Constants.ActionSheetTagResetSettings && buttonIndex == 0 {
+            Settings.resetToDefaults()
+            refreshUI()
+        }
     }
 }

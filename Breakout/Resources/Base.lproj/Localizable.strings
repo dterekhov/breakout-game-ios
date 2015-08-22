@@ -20,3 +20,8 @@
 "Winning" = "winning";
 "Losing" = "losing";
 "LastResult" = "Last result";
+"StartNewGame" = "Start new game?";
+"Cancel" = "Cancel";
+"Start" = "Start";
+"ResetSettings" = "Reset settings to defaults?";
+"Reset" = "Reset";
