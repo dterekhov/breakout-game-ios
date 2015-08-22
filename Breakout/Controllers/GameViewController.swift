@@ -15,8 +15,10 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let PaddleCornerRadius: CGFloat = 5
         static let PaddleBoundaryIdentifier = "Paddle"
         static let GameViewBoundaryIdentifier = "GameView"
+        static let BallSize = CGSize(width: 32, height: 32)
         static let BallSpeedDifficultyEasy: CGFloat = 0.3
         static let BallSpeedDifficultyHard: CGFloat = 0.5
+        static let GameView4InchScreenHeight: CGFloat = 519
         static let LivesDifficultyEasyCount = 5
         static let LivesDifficultyHardCount = 3
         static let ParallaxOffset = 50
@@ -57,7 +59,6 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private lazy var breakoutBehavior: BreakoutBehavior = {
         let lazilyCreatedBreakoutBehavior = BreakoutBehavior()
-        lazilyCreatedBreakoutBehavior.ballSpeed = Settings.difficultyHard ? Constants.BallSpeedDifficultyHard : Constants.BallSpeedDifficultyEasy
         lazilyCreatedBreakoutBehavior.allowBallRotation = Settings.ballRotation
         lazilyCreatedBreakoutBehavior.collisionDelegate = self
         lazilyCreatedBreakoutBehavior.ballOutOfGameViewBoundsHandler = { [weak lazilyCreatedBreakoutBehavior] in
@@ -168,6 +169,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         super.viewDidLayoutSubviews()
         
         if !isGameStarted && livesCount > 0 {
+            refreshSpeedInBallBehavior()
             resetGameObjects()
         }
     }
@@ -179,22 +181,27 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     @objc private func difficultyHardDidChanged() {
         fullLivesCount = Settings.difficultyHard ? Constants.LivesDifficultyHardCount : Constants.LivesDifficultyEasyCount
-        breakoutBehavior.ballSpeed = Settings.difficultyHard ? Constants.BallSpeedDifficultyHard : Constants.BallSpeedDifficultyEasy
+        refreshSpeedInBallBehavior()
         comboBrickCollisionBonusPoints = Settings.difficultyHard ? Constants.ComboBrickCollisionBonusPointsDifficultyHard : Constants.ComboBrickCollisionBonusPointsDifficultyEasy
         newGame()
     }
     
     // MARK: - Ball
     private func resetBall() {
-        let ball = UIImageView()
-        ball.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - ballSize.width / 2, y: paddle.frame.origin.y - ballSize.height), size: ballSize)
-        ball.layer.cornerRadius = ballSize.width / 2
+        let ball = UIImageView(frame: CGRect(origin: CGPoint(x: gameView.bounds.midX - Constants.BallSize.width / 2, y: paddle.frame.origin.y - Constants.BallSize.height), size: Constants.BallSize))
+        ball.layer.cornerRadius = Constants.BallSize.width / 2
         ball.image = Constants.BallImage
         breakoutBehavior.addBallBehavior(ball)
         
         isGameStarted = false
     }
     
+    private func refreshSpeedInBallBehavior() {
+        let ballSpeed = Settings.difficultyHard ? Constants.BallSpeedDifficultyHard : Constants.BallSpeedDifficultyEasy
+        let speedCoefficient = gameView.bounds.height / Constants.GameView4InchScreenHeight
+        breakoutBehavior.ballSpeed = ballSpeed * speedCoefficient
+    }
+        
     // MARK: - Paddle
     private func resetPaddle() {
         paddle.frame = CGRect(origin: CGPoint(x: gameView.bounds.midX - paddleSize.width / 2, y: gameView.bounds.height - paddleSize.height - Constants.PaddleBottomIndent), size: paddleSize)
@@ -360,13 +367,8 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     }
     
     // MARK: - Helpers
-    private var ballSize: CGSize {
-        let sideSize = gameView.bounds.size.width / 10
-        return CGSize(width: sideSize, height: sideSize)
-    }
-    
     private var paddleSize: CGSize {
-        let width = ballSize.width * 2
+        let width = gameView.bounds.size.width / 5
         return CGSize(width: width, height: Constants.PaddleHeight)
     }
     
