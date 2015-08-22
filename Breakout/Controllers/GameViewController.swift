@@ -22,8 +22,9 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         static let LivesDifficultyEasyCount = 5
         static let LivesDifficultyHardCount = 3
         static let ParallaxOffset = 50
-        static let ComboBrickCollisionBonusPointsDifficultyEasy = 1
-        static let ComboBrickCollisionBonusPointsDifficultyHard = 2
+        static let ComboBrickCollisionBonusPointsDifficultyEasy = 2
+        static let ComboBrickCollisionBonusPointsDifficultyHard = 3
+        static let ComboLabelIPadFontSize: CGFloat = 80
         
         static let PaddleGradientColors = [
             UIColor(red:0.74, green:0.74, blue:0.76, alpha:1).CGColor,
@@ -148,6 +149,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
         
         if BreakoutUIHelper.isIPad {
             tabBarController?.tabBar.hidden = true
+            comboLabel.font = UIFont.systemFontOfSize(Constants.ComboLabelIPadFontSize)
         } else {
             settingsButton.hidden = true
         }
@@ -233,7 +235,7 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     // MARK: - UICollisionBehaviorDelegate, collision handlers
     func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
         if let brickIndex = identifier as? Int {
-            comboBrickCollisionsCount += comboBrickCollisionBonusPoints // Several collisions in sequence
+            comboBrickCollisionsCount++ // Several collisions in sequence
             handleBrickCollisionActionAtIndex(brickIndex)
         } else if identifier as? String == Constants.PaddleBoundaryIdentifier {
             comboBrickCollisionsCount = 0
@@ -242,8 +244,9 @@ class GameViewController: UIViewController, UICollisionBehaviorDelegate, UIAlert
     
     private func handleBrickCollisionActionAtIndex(index: Int) {
         if let brick = brickBuilder.bricks[index] {
-            // Second collision and further give you 2 points instead 1 point
-            score += comboBrickCollisionsCount > 1 ? 2 : 1
+            // Second collision and further give you more points
+            let test1 = comboBrickCollisionsCount > 1 ? comboBrickCollisionBonusPoints : 1
+            score += test1
             
             switch brick.type {
             case .Normal:

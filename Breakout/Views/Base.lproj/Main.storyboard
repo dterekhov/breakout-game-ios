@@ -23,7 +23,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5j-HZ-Ve2" userLabel="gameView" customClass="BezierPathsView" customModule="Breakout" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Combo!" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uyU-kN-931" userLabel="comboLabel">
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Combo!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uyU-kN-931" userLabel="comboLabel">
                                         <rect key="frame" x="230.5" y="252" width="140.5" height="48"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="40"/>
                                         <color key="textColor" red="1" green="0.40000000596046448" blue="0.40000000596046448" alpha="1" colorSpace="calibratedRGB"/>
@@ -34,7 +34,7 @@
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="centerX" secondItem="uyU-kN-931" secondAttribute="centerX" id="bqb-Bt-WRd"/>
-                                    <constraint firstAttribute="centerY" secondItem="uyU-kN-931" secondAttribute="centerY" constant="-0.5" id="znY-O2-ExY"/>
+                                    <constraint firstAttribute="centerY" secondItem="uyU-kN-931" secondAttribute="centerY" id="znY-O2-ExY"/>
                                 </constraints>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="Att-lr-qvK" appends="YES" id="7wZ-7w-3Jf"/>
