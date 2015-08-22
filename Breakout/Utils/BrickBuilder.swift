@@ -118,12 +118,12 @@ class BrickBuilder {
                 }, completion: {
                     (success) -> Void in
                     brickView.removeFromSuperview()
-                    self.bricks[index] = nil
-                    
-                    if self.bricks.count == 0 && self.allBricksDestroyedHandler != nil {
-                        self.allBricksDestroyedHandler!()
-                    }
             })
+            
+            bricks.removeValueForKey(index)
+            if self.bricks.count == 0 && self.allBricksDestroyedHandler != nil {
+                self.allBricksDestroyedHandler!()
+            }
         }
     }
 }
